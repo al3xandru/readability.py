@@ -47,8 +47,8 @@ class Readability(object):
     self.fsoup = ICantBelieveItsBeautifulSoup(OUTPUT_BODY % dict(read_style=self.read_style, read_margin=self.read_margin, read_size=self.read_size))
 
 
-  def processDocument(self, preserveUnlikelyCandidates=False):
-    self.prepareDocument()
+  def process_document(self, preserveUnlikelyCandidates=False):
+    self.prepare_document()
 
     articleContent = self.grab_article(preserveUnlikelyCandidates)
     #
@@ -59,7 +59,7 @@ class Readability(object):
     if not self.get_inner_text(articleContent, False):
       if not preserveUnlikelyCandidates:
         self.osoup = ICantBelieveItsBeautifulSoup(self.content)
-        return self.processDocument(preserveUnlikelyCandidates=True)
+        return self.process_document(preserveUnlikelyCandidates=True)
       else:
         articleContent = Tag(self.fsoup, 'p')
         articleContent.setString("Sorry, readability was unable to parse this page for content. If you feel like it should have been able to, please <a href='http://code.google.com/p/arc90labs-readability/issues/entry'>let us know by submitting an issue.</a>")
@@ -94,7 +94,7 @@ class Readability(object):
     output = killMoreBreaksRe.sub('<p', output)
     return output
 
-  def prepareDocument(self):
+  def prepare_document(self):
     # remove all scripts
     [script.extract() for script in self.osoup.findAll('script')]
     
@@ -451,11 +451,7 @@ if __name__ == '__main__':
   import urllib2
   response = urllib2.urlopen(sys.argv[1])
   html = response.read()
-#  print '===   html   ==='
-#  print html
-#  print '=== end html ==='
   df = Readability(html)
-  df.processDocument()
-#  print '=== output ==='
+  df.process_document()
   if __OUTPUT__:
     print df.get_html(prettyPrint=True)
