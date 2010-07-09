@@ -47,16 +47,30 @@ class Readability(object):
     self.fsoup = ICantBelieveItsBeautifulSoup(OUTPUT_BODY % dict(read_style=self.read_style, read_margin=self.read_margin, read_size=self.read_size))
 
 
-  def process_document(self, preserveUnlikelyCandidates=False):
-    self.prepare_document()
+  def get_html(self, prettyPrint=False, removeComments=True):
+    if removeComments:
+      [comment.extract() for comment in self.fsoup.findAll(text=lambda text:isinstance(text, Comment))]
 
-    articleContent = self.grab_article(preserveUnlikelyCandidates)
+    output = self.fsoup.renderContents(prettyPrint=prettyPrint)
+    output = clean_extraspaces(output)
+    return output
+
+  def get_doc(self, removeComments=True):
+    """ Returns the output as a BeautifulSoup object.
+    Note that this object is a copy and modifying it will not
+    modify the real output"""
+    return ICantBelieveItsBeautifulSoup(self.get_html(removeComments=removeComments))
+
+  def process_document(self, preserveUnlikelyCandidates=False):
+    self._prepare_document()
+
+    articleContent = self._grab_article(preserveUnlikelyCandidates)
     #
     # If we attempted to strip unlikely candidates on the first run through, and we ended up with no content,
     # that may mean we stripped out the actual content so we couldn't parse it. So re-run init while preserving
     # unlikely candidates to have a better shot at getting our content out properly.
     #
-    if not self.get_inner_text(articleContent, False):
+    if not self._get_inner_text(articleContent, False):
       if not preserveUnlikelyCandidates:
         self.osoup = ICantBelieveItsBeautifulSoup(self.content)
         return self.process_document(preserveUnlikelyCandidates=True)
@@ -65,17 +79,17 @@ class Readability(object):
         articleContent.setString("Sorry, readability was unable to parse this page for content. If you feel like it should have been able to, please <a href='http://code.google.com/p/arc90labs-readability/issues/entry'>let us know by submitting an issue.</a>")
 
 
-    divInner = self.fsoup.find('div', attrs={'id':'readInner'}) 
-    divInner.insert(0, self.get_article_title())
+    divInner = self.fsoup.find('div', attrs={'id':'readInner'})
+    divInner.insert(0, self._get_article_title())
     divInner.insert(1, articleContent)
-    
+
     # prepare head
     head = self.osoup.find('head')
-    screen_stylesheet = Tag(self.fsoup, 'link', attrs=[('rel', 'stylesheet'), 
+    screen_stylesheet = Tag(self.fsoup, 'link', attrs=[('rel', 'stylesheet'),
                                                        ('href', 'http://lab.arc90.com/experiments/readability/css/readability.css'),
                                                        ('type', 'text/css'),
                                                        ('media', 'screen')])
-    print_stylesheet = Tag(self.fsoup, 'link', attrs=[('rel', 'stylesheet'), 
+    print_stylesheet = Tag(self.fsoup, 'link', attrs=[('rel', 'stylesheet'),
                                                       ('href', 'http://lab.arc90.com/experiments/readability/css/readability-print.css'),
                                                       ('type', 'text/css'),
                                                       ('media', 'print')])
@@ -84,17 +98,7 @@ class Readability(object):
     head.append(screen_stylesheet)
     head.append(print_stylesheet)
 
-
-  def get_html(self, prettyPrint=False, removeComments=True):
-    if removeComments:
-      [comment.extract() for comment in self.fsoup.findAll(text=lambda text:isinstance(text, Comment))]
-
-    output = self.fsoup.renderContents(prettyPrint=prettyPrint)
-    output = killBreaksRe.sub('<br />', output)
-    output = killMoreBreaksRe.sub('<p', output)
-    return output
-
-  def prepare_document(self):
+  def _prepare_document(self):
     # remove all scripts
     [script.extract() for script in self.osoup.findAll('script')]
     
@@ -107,16 +111,16 @@ class Readability(object):
 
     # remove fonts
     for font in self.osoup.findAll('font'):
-      self.replace_element(self.osoup, font, 'span')
+      self._replace_element(self.osoup, font, 'span')
 
-  def get_article_title(self):
+  def _get_article_title(self):
     articleTitle = Tag(self.fsoup, 'h1')
     title = self.osoup.find('title')
     if title and title.string:
       articleTitle.contents.append(title.string)
     return articleTitle
 
-  def grab_article(self, preserveUnlikelyCandidates):
+  def _grab_article(self, preserveUnlikelyCandidates):
     def match_unlikely_candidates(node):
       if not isinstance(node, Tag):
         return False
@@ -136,7 +140,7 @@ class Readability(object):
     for node in self.osoup.body.findAll('div'):
       children = node.findAll(['a', 'blockquote', 'dl', 'div', 'img', 'ol', 'p', 'pre', 'table', 'ul'])
       if len(children) == 0:
-        self.replace_element(self.osoup, node, 'p')
+        self._replace_element(self.osoup, node, 'p')
         dbg("Altering div to p")
       else:
         # experimental: replace text node with a p tag with the same content
@@ -164,7 +168,7 @@ class Readability(object):
     for paragraph in self.osoup.body.findAll('p'):
       parentNode      = paragraph.parent
       grandParentNode = parentNode.parent
-      innerText       = self.get_inner_text(paragraph)
+      innerText       = self._get_inner_text(paragraph)
 
       # If this paragraph is less than 25 characters, don't even count it.
       if len(innerText) < 25:
@@ -172,12 +176,12 @@ class Readability(object):
 
       # Initialize readability data for the parent.
       if not getattr(parentNode, 'readability', None):
-        self.initialize_node(parentNode)
+        self._initialize_node(parentNode)
         candidates.append(parentNode)
 
       # Initialize readability data for the grandparent.
       if not getattr(grandParentNode, 'readability', None):
-        self.initialize_node(grandParentNode)
+        self._initialize_node(grandParentNode)
         candidates.append(grandParentNode)
 
       contentScore = 0
@@ -207,7 +211,7 @@ class Readability(object):
       #
       dbg("before candidate found %s with contentScore: %d (%s:%s)" % (node.name, node.readability['contentScore'], node.get('class', ''), node.get('id', '')))
         
-      node.readability['contentScore'] = node.readability['contentScore'] * (1-self.get_link_density(node))
+      node.readability['contentScore'] = node.readability['contentScore'] * (1-self._get_link_density(node))
 
       dbg('Candidate: ' + node.name + " (" + node.get('class', '') + ":" + node.get('id', '') + ") with score " + str(node.readability['contentScore']))
 
@@ -224,7 +228,7 @@ class Readability(object):
       for c in self.osoup.body.contents:
         topCandidate.append(c)
       self.osoup.body.append(topCandidate)
-      self.initialize_node(topCandidate)
+      self._initialize_node(topCandidate)
       dbg('Candidate: ' + topCandidate.name + " ( ) with score " + topCandidate.readability['contentScore'])
 
     #
@@ -247,8 +251,8 @@ class Readability(object):
         append = True
 
       if sibling.name == "p":
-        linkDensity = self.get_link_density(sibling)
-        nodeContent = self.get_inner_text(sibling)
+        linkDensity = self._get_link_density(sibling)
+        nodeContent = self._get_inner_text(sibling)
         nodeLength  = len(nodeContent)
 
         if nodeLength > 80 and linkDensity < 0.25:
@@ -265,59 +269,61 @@ class Readability(object):
     #
     #So we have all of the content that we need. Now we clean it up for presentation.
     #
-    self.prep_article(articleContent)
+    self._prep_article(articleContent)
 
     return articleContent
 
-  def prep_article(self, articleContent):
-    self.clean_styles(articleContent)
+  def _prep_article(self, articleContent):
+    self._clean_styles(articleContent)
 
     # this is better applied directly on the output string
     # self.kill_breaks(articleContent)
 
-    self.clean(articleContent, 'form')
-    self.clean(articleContent, 'object')
-    self.clean(articleContent, 'h1')
-    self.clean(articleContent, 'iframe')
+    self._clean(articleContent, 'form')
+    self._clean(articleContent, 'object')
+    self._clean(articleContent, 'h1')
+    self._clean(articleContent, 'iframe')
 
-    if len(articleContent.findAll('h2')) == 1:
-      self.clean(articleContent, 'h2')
+    subtitles = articleContent.findAll('h2') 
+    if len(subtitles) == 1:
+      [s.extract() for s in subtitles]
+
 
     for paragraph in articleContent.findAll('p'):
       imgCount = len(paragraph.findAll('img'))
       embedCount = len(paragraph.findAll(['embed', 'object']))
-      if imgCount == 0 and embedCount == 0 and len(self.get_inner_text(paragraph)) == 0:
+      if imgCount == 0 and embedCount == 0 and len(self._get_inner_text(paragraph)) == 0:
         paragraph.extract()
         
-    self.clean_conditionally(articleContent, 'table')
-    self.clean_conditionally(articleContent, 'ul')
-    self.clean_conditionally(articleContent, 'div')
+    self._clean_conditionally(articleContent, 'table')
+    self._clean_conditionally(articleContent, 'ul')
+    self._clean_conditionally(articleContent, 'div')
     
 
-  def clean_styles(self, articleContent):
+  def _clean_styles(self, articleContent):
     for c in articleContent.contents:
       if isinstance(c, Tag):
         if c.get('class', '') != 'readability-styles' and c.has_key('style'):
           del c['style']
-        self.clean_styles(c)
+        self._clean_styles(c)
     
-  def clean(self, articleContent, tag):
+  def _clean(self, articleContent, tag):
     is_embed = (tag in ('object', 'embed'))
     for c in articleContent.findAll(tag):
       if is_embed and videoRe.match(str(c)):
         continue
       c.extract()
 
-  def clean_conditionally(self, articleContent, tag):
+  def _clean_conditionally(self, articleContent, tag):
     for node in articleContent.findAll(tag):
-      weight = self.get_class_weight(node)
+      weight = self._get_class_weight(node)
 
       dbg("Cleaning Conditionally " + node.name + " (" + node.get('class', '') + ":" + node.get('id', '') + ")")
       dbg("Element has score " + (str(node.readability['contentScore']) if getattr(node, 'readability') else 'Unknown'))
       
       if weight < 0:
         node.extract()
-      elif self.get_char_count(node, ',') < 10:
+      elif self._get_char_count(node, ',') < 10:
         #
         # If there are not very many commas, and the number of
         # non-paragraph elements is more than paragraphs or other ominous signs, remove the element.
@@ -332,8 +338,8 @@ class Readability(object):
           if not videoRe.match(str(embed)):
             embedCount += 1
 
-        linkDensity = self.get_link_density(node)
-        contentLenght = len(self.get_inner_text(node))
+        linkDensity = self._get_link_density(node)
+        contentLenght = len(self._get_inner_text(node))
         toRemove = False
 
         if img > p:
@@ -355,14 +361,14 @@ class Readability(object):
           node.extract()
 
 
-  def get_char_count(self, node, separator=','):
-    return len(self.get_inner_text(node).split(separator))
+  def _get_char_count(self, node, separator=','):
+    return len(self._get_inner_text(node).split(separator))
     
-  def get_link_density(self, node):
-    textLength = len(self.get_inner_text(node))
+  def _get_link_density(self, node):
+    textLength = len(self._get_inner_text(node))
     linkLength = 0
     for l in node.findAll('a'):
-      linkLength += len(self.get_inner_text(l))
+      linkLength += len(self._get_inner_text(l))
 
     dbg("get_link_density for %s %d/%d with contentScore: %d (%s:%s)" % (node.name, linkLength, textLength, node.readability['contentScore'], node.get('class', ''), node.get('id', '')))
       
@@ -370,7 +376,7 @@ class Readability(object):
       return 1
     return float(linkLength) / textLength
 
-  def initialize_node(self, node):
+  def _initialize_node(self, node):
     node.readability = {'contentScore':0}
 
     tag = node.name 
@@ -384,10 +390,10 @@ class Readability(object):
       node.readability['contentScore'] -= 5
 
     dbg("initializeNode1: %s (%s:%s): %d " % (node.name, node.get('class', ''), node.get('id', ''), node.readability['contentScore']))
-    node.readability['contentScore'] += self.get_class_weight(node)
+    node.readability['contentScore'] += self._get_class_weight(node)
     dbg("initializeNode2: %s (%s:%s): %d " % (node.name, node.get('class', ''), node.get('id', ''), node.readability['contentScore']))
 
-  def get_class_weight(self, node):
+  def _get_class_weight(self, node):
     weight = 0
     
     # Look for a special classname
@@ -411,14 +417,15 @@ class Readability(object):
 
     return weight  
 
-  def get_inner_text(self, node, trimSpaces=True, normalizeSpaces=True):
+  def _get_inner_text(self, node, trimSpaces=True, normalizeSpaces=True):
+    """ Can this method be implemented using Tag.fetchText() ? """
     textContent = ''
 
     for c in node.contents:
       if isinstance(c, NavigableString):
         textContent = textContent + ' ' + c
       else:
-        textContent = textContent + self.get_inner_text(c, trimSpaces=False, normalizeSpaces=False)
+        textContent = textContent + self._get_inner_text(c, trimSpaces=False, normalizeSpaces=False)
 
     if trimSpaces:
       textContent = trimRe.sub('', textContent)
@@ -427,11 +434,17 @@ class Readability(object):
       
     return textContent
 
-  def replace_element(self, soup, node, new_element):
+  def _replace_element(self, soup, node, new_element):
     new_node = Tag(soup, new_element, attrs=node.attrs)
     for c in [c for c in node.contents]:
       new_node.append(c)
     node.replaceWith(new_node)
+
+def clean_extraspaces(output):
+  output = killBreaksRe.sub('<br />', output)
+  output = killMoreBreaksRe.sub('<p', output)
+  return output  
+  
 
 OUTPUT_BODY = """<html>
 <body class='%(read_style)s'>
