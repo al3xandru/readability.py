@@ -13,11 +13,13 @@ Current module requires [BeautifulSoup](http://www.crummy.com/software/Beautiful
     readability.get_html()
 
 Readability accepts a couple of parameters:
+
 - read_style: ('style-newspaper', 'style-novel', 'style-athelas', 'style-ebook', 'style-apertura')
 - read_margin: ('margin-x-narrow', 'margin-narrow', 'margin-medium', 'margin-wide', 'margin-x-wide')
 - read_size: ('size-x-small', 'size-small', 'size-medium', 'size-large', 'size-x-large')
 
 For output:
+
 - prettyPrint: a nice formatting flag
 - removeComments: remove all HTML comments from the generated output
 
