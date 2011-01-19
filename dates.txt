@@ -1,0 +1,144 @@
+http://blogs.hbr.org/bregman/2010/05/how-and-why-to-stop-multitaski.html
+<p class="byline"> 2:40 PM Thursday May 20, 2010  &nbsp;|&nbsp;<a href="#comments">Comments (<script type="text/javascript" src="http://disqus.com/forums/hbrproduction/get_num_replies_for_entry.js?url=http://blogs.hbr.org/bregman/2010/05/how-and-why-to-stop-multitaski.html"></script>119<noscript></noscript>)</a></p>
+
+<div class="asset-meta">
+  <div class="byline"><a href="http://www.oreillynet.com/pub/au/3731">Romin Irani</a></div>
+  <div class="meta">December 21, 2010
+    <span class="separator">|</span> <a class="permalink" href="http://insideria.com/2010/12/html-recipes-browser-capabilit.html">Permalink</a>
+    | <a href="http://insideria.com/2010/12/html-recipes-browser-capabilit.html#comments">Comments (3)</a>
+  </div>
+</div>
+
+<p class="asset-meta">by <a href="http://radar.oreilly.com/mslocum/index.html">Mac Slocum</a><!-- RSPEAK_STOP -->
+ |&nbsp;<a href="http://twitter.com/macslocum">@macslocum</a>
+|&nbsp;<a href="http://radar.oreilly.com/2010/12/2011-data.html#comments">Comments: 1</a> 
+|&nbsp;<span class="date">27 December 2010</span></p>
+
+
+http://scripting.com/stories/2010/12/28/aSimpleThoughtAboutPolitic.html
+<p class="storyByline">By Dave Winer on Tuesday, December 28, 2010 at 1:23 PM.</p>
+
+http://daringfireball.net/linked/2010/12/28/contract-goblins
+<p class="smallprint">★ <em>Tuesday, 28 December 2010</em></p>
+
+http://www.jon22.net/contract-goblins/
+<div class="post_meta">–October 19<sup>th</sup>  2009</div>
+
+http://news.softpedia.com/news/New-Android-Market-Stats-Out-Over-200k-Apps-Available-174949.shtml
+<p class="dtreviewed"><nobr>December 28th, 2010, 16:42 GMT| By <span class="reviewer"><a href="http://news.softpedia.com/editors/browse/ionut-arghire"><b>Ionut Arghire</b></a><span></span></span></nobr></p>
+
+http://online.wsj.com/article/SB10001424052748704774604576035611315663944.html
+<ul class="cMetadata metadataType-articleStamp">
+<li class="articleSection first"><a href="/public/page/news-tech-technology.html">TECHNOLOGY</a></li>
+<li class="dateStamp"><small>DECEMBER 27, 2010</small></li>
+</ul>
+
+http://finance.fortune.cnn.com/2010/12/28/union-square-ventures-discloses-new-fund-details-and-maybe-a-new-partner/
+<div class="storybyline">Posted by <a href="http://finance.fortune.cnn.com/author/danielprimack/" title="Posts by Dan Primack">Dan Primack</a></div>
+<div class="storytimestamp">December 28, 2010 11:34 am</div>
+
+
+http://dealbook.nytimes.com/2010/12/27/stock-trading-in-private-companies-draws-scrutiny/
+<div class="entry-meta"><!-- date published -->
+<span class="timestamp published" title="2010-12-27T22:06:45+00:00">
+<span class="date">December 27, 2010, <em>10:06 pm</em></span></span>
+<!-- date updated -->
+<!-- <abbr class="updated" title="2010-12-28T10:10:33+00:00">&#8212; Updated: 10:10 am</abbr> -->
+<span class="cat-links"><a href="http://dealbook.nytimes.com/category/main-topics/ipoofferings/">I.P.O./Offerings</a></span> </div>
+
+<address class="byline author vcard">By <a href="/author/peter-lattman/" class="url fn" title="See all posts by PETER LATTMAN">PETER LATTMAN</a></address>
+
+
+http://www.businessweek.com/news/2010-12-28/apple-sued-over-applications-giving-information-to-advertisers.html
+<span id="pubDate" class="date">December 28, 2010, 12:28 PM EST</span>
+
+<p class="partner"><cite>By Joel Rosenblatt</cite></p>
+
+
+http://nanohack.me/?p=4
+<div class="entry-meta">
+  <span class="meta-prep meta-prep-author">Posted on</span> 
+  <a href="http://nanohack.me/?p=4" title="10:24 pm" rel="bookmark"><span class="entry-date">December 27, 2010</span></a> 
+  <span class="meta-sep">by</span> 
+  <span class="author vcard"><a class="url fn n" href="http://nanohack.me/?author=1" title="View all posts by Revenge">Revenge</a></span>					</div>
+
+http://www.digitimes.com/news/a20101228VL200.html
+<font class="Author">Joseph Tsai, DIGITIMES, Taipei&nbsp;[Tuesday 28 December 2010]</font>
+
+http://www.asymco.com/2010/12/27/apple-has-accepted-nearly-400000-apps-in-2-5-years/
+<div class="entry-date">
+  <abbr class="date published" title="2010-12-27">Dec 27, ’10</abbr>
+  <abbr class="time published" title="UTC17:31:08+0000">5:31 PM</abbr>
+</div>
+<div class="single-entry-meta">
+  <span class="author meta-item">
+	  <span class="label">Author</span>
+		<span class="meta-content"><a href="http://www.asymco.com/author/asymco/" title="Posts by Horace Dediu">Horace Dediu</a></span>
+	</span>
+	<span class="post-tags meta-item">
+	  <span class="label">Categories</span> 
+    <span class="meta-content"><a href="http://www.asymco.com/category/industry/" title="View all posts in Industry" rel="category tag">Industry</a></span>					
+    <span class="label">Tags</span> 
+    <span class="meta-content"><a href="http://www.asymco.com/tag/app-store/" rel="tag">App Store</a></span>
+  </span>
+</div>
+
+http://blogs.barrons.com/techtraderdaily/2010/12/27/logi-google-has-not-requested-revue-halt/
+<div class="col6wide articleHeadlineBox headlineType-newswire">
+  <ul class="cMetadata metadataType-articleStamp">
+    <li class="dateStamp first"><small>December 27, 2010, 12:44 PM ET</small></li>
+  </ul>
+  <h1>LOGI: Google Has Not Requested ‘Revue’ Halt</h1>
+</div>
+<h3 class="byline">By Tiernan Ray</h3>
+
+
+http://blog.compete.com/2010/12/27/im-the-mayor-so-what/
+<p class="tabs postmetadata">in <span class="category"><a href="http://blog.compete.com/category/social/" title="View all posts in Social" rel="category tag">Social</a> <a href="http://blog.compete.com/category/technology-entertainment/" title="View all posts in Technology &amp; Entertainment" rel="category tag">Technology &amp; Entertainment</a></span> by <a href="http://blog.compete.com/author/karen-costa/" title="Posts by Karen Costa">Karen Costa</a> <span class="datetime"> — December 27, 2010 at 7:14 pm</span> | <a href="http://blog.compete.com/2010/12/27/im-the-mayor-so-what/#commentspost" title="Jump to the comments">37 comments</a></p>
+
+http://www.readwriteweb.com/archives/a_taste_of_its_own_medicine_4chan_down_due_to_ddos.php
+<div id="submeta" class="author-date-comments">
+  By <a href="http://www.readwriteweb.com/archives/author/mike-melanson.php">Mike Melanson</a> / December 28, 2010  9:20 AM 
+  / <a href="http://www.readwriteweb.com/archives/a_taste_of_its_own_medicine_4chan_down_due_to_ddos.php#disqus_thread">3 Comments</a>
+</div>
+
+http://techcrunch.com/2010/12/28/sec-private-stock/
+<div class="post_subheader snap_nopreview" style="padding-bottom: 8px;">
+<div class="post_subheader_left">
+  <a rel="nofollow" href="http://techcrunch.com/author/tcerick/" title="Posts by Erick Schonfeld">Erick Schonfeld</a> 
+  <div style="height:4px;"></div>
+30 minutes ago</div>
+</div>
+
+http://gigaom.com/video/the-next-big-ddos-attack-may-come-via-bittorrent/
+<div id="post-meta-281044" class="">
+  <span class="post-meta the-author">By <a rel="nofollow" href="http://gigaom.com/author/jroettgers/" title="Posts by Janko Roettgers">Janko Roettgers</a></span>
+	<span class="post-meta the-date">Dec. 28, 2010, 8:36am PDT</span>
+	<span class="post-meta comments-link"><a href="http://gigaom.com/video/the-next-big-ddos-attack-may-come-via-bittorrent/#comments" rev="post-281044" rel="nofollow" title="Comment on The Next Big DDOS Attack May Come via&nbsp;BitTorrent">1 Comment</a></span>
+</div>
+
+
+http://blogs.wsj.com/digits/2010/12/27/bezos-discounts-kindle-tablet-competition/
+<div class="articleHeadlineBox headlineType-newswire">
+  <ul class="cMetadata metadataType-articleStamp ">
+    <li class="dateStamp first"><small>December 27, 2010, 2:55 PM ET</small></li>
+  </ul>
+  <h1>Bezos Discounts Kindle-Tablet Competition</h1>
+</div>
+
+http://www.businessweek.com/technology/content/dec2010/tc20101227_227798.htm
+<div id="strapBox">
+  <span class="strap">Software</span>
+  <span class="date">December 28, 2010, 12:02AM EST</span>
+  <span id="textSizer"></span>
+  <span id="textSizer">text size: <a class="normal current" href="#">T</a><a class="large" href="#">T</a></span>
+</div>
+
+http://www.newsweek.com/2010/12/22/google-s-marissa-mayer-girls-can-be-geeks-too.html
+<div class="byline">
+  <img class="author-image" property="v:photo" src="/content/dam/site/author/dan_lyons.png" alt="Daniel Lyons" width="70" height="70">
+  <div class="grid-2 last author-wrapper">
+    <span class="by quiet">by </span><a href="/authors/daniel-lyons.html" class="author" typeof="foaf:person" property="dc:creator" rel="foaf:publications" content="Daniel Lyons">Daniel Lyons</a><time datetime="2010-12-22" property="dc:created">December 22, 2010</time>
+  </div>
+</div>
+
