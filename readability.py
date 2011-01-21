@@ -15,11 +15,10 @@ from __future__ import generators
 import htmlentitydefs
 import logging
 import re
+import urllib
 import urlparse
 
 from string import punctuation
-
-#from BeautifulSoup import ICantBelieveItsBeautifulSoup, Comment, Tag, NavigableString
 
 __READABILITY_VERSION__ = '1.7.1'
 __BEAUTIFULSOUP_VERSION = '3.2.0'
@@ -53,20 +52,41 @@ SIZES = ('size-x-small', 'size-small', 'size-medium', 'size-large', 'size-x-larg
 # TODO:
 # - frames (?)
 # - use Tag.fetchText()
-# - what happens if the HTML is completely screwed and there's no BODY
+
+_DEFAULT_SETTINGS = {
+  'footnote_links': False,
+  'readable_links': False,
+  'readable_footnote_links': False,
+  'read_style': 'style-athelas',
+  'read_margin': 'margin-medium',
+  'read_size': 'size-medium',
+  'strip_unlike': True,
+  'weight_classes': True,
+  'clean_conditionally': True
+}
 
 class Readability(object):
   def __init__(self, content, url=None, footnote_links=False, **settings):
-    self.read_style = settings.get('read_style', 'style-athelas')
-    self.read_margin = settings.get('read_margin', 'margin-medium')
-    self.read_size = settings.get('read_size', 'size-medium')
+    ''' Supported settings:
 
-    self._flag_strip_unlikelys = settings.get('strip_unlike', True)
-    self._flag_weight_classes = settings.get('weight_classes', True)
-    self._flag_clean_conditionally = settings.get('clean_conditionally', True)
-  
+    - footnote_links: extract a set of footnotes from all links in content
+    - readable_links: transform content links to go through readability
+    - readable_footnote_links: include in the footnotes links that go through readability
+
+    - read_style: formatting setting
+    - read_margin: formatting setting
+    - read_size: formatting setting
+
+    - strip_unlike: processing setting
+    - weight_classes: processing setting
+    - clean_conditionally: processing setting
+    '''
+    self._conf = _DEFAULT_SETTINGS.copy()
+    self._conf.update(settings)
+    self._conf['footnote_links'] = footnote_links
+    self._conf['readable_footnote_links'] = self._conf['footnote_links'] and self._conf['readable_footnote_links']
+
     self._url = url or ""
-    self._footnote_links = footnote_links
     
     self.content = replaceBrsRe.sub('</p><p>', content)
     try:
@@ -74,7 +94,7 @@ class Readability(object):
     except TypeError:
       raise ValueError('content cannot be converted to unicode')
 #    dbg("content: %s" % self._osoup)
-    self._fsoup = ICantBelieveItsBeautifulSoup(Readability.OUTPUT_BODY % dict(read_style=self.read_style, read_margin=self.read_margin, read_size=self.read_size))
+    self._fsoup = ICantBelieveItsBeautifulSoup(Readability.OUTPUT_BODY % self._conf)
 
   def get_html(self, prettyPrint=False, removeComments=True):
     if removeComments:
@@ -97,13 +117,13 @@ class Readability(object):
     nextPageLinks = self._find_next_page_link()
     dbg("nextPageLinks: %s" % nextPageLinks)
     
-    article_title = self._get_article_title()
+    article_title = self._getArticleTitle()
     
     if not len(self._osoup.findAll('body')):
       articleContent = Tag(self._fsoup, 'p')
       articleContent.setString("Sorry, readability was unable to parse this page for content. If you feel like it should have been able to, please <a href='http://code.google.com/p/arc90labs-readability/issues/entry'>let us know by submitting an issue.</a>")
     else:
-      articleContent = self.grabArticle()
+      articleContent = self._grabArticle()
       #
       # If we attempted to strip unlikely candidates on the first run through, and we ended up with no content,
       # that may mean we stripped out the actual content so we couldn't parse it. So re-run init while preserving
@@ -131,7 +151,7 @@ class Readability(object):
 #    if self._url:
 #      divInner.append(self._get_article_link())
     divInner.append(articleContent)
-    divInner.append(self._get_article_footer(article_title))
+    divInner.append(self._getArticleFooter(article_title))
 
     # prepare head
     head = self._osoup.find('head')
@@ -170,12 +190,10 @@ class Readability(object):
     art_link.setString("<small>%s</small>" % self._url)
     return art_link
 
-  def _get_article_footer(self, title):
-#    articleFooter = Tag(self._fsoup, 'div', attrs=[('id', 'readFooter')])
-#    articleFooter.setString("<div id='rdb-footer-print-'>Excerpted from: <cite>%s</cite>: <small>%s</small></div>" % (self.getInnerText(title), self._url))
+  def _getArticleFooter(self, title):
     articleFooter = Tag(self._fsoup, 'div', attrs=[('id', 'readFooter')])
     if self._url:
-      articleFooter.setString("<div id='rdb-footer-print-'><cite>%s</cite></div>" % self._url)
+      articleFooter.setString("<div id='rdb-footer-print-'><cite><a href='%s'>%s</a></cite></div>" % (self._url, self._url))
     
     return articleFooter
 
@@ -185,7 +203,7 @@ class Readability(object):
     
     self._fix_links()
     
-    if self._footnote_links:
+    if self._conf['footnote_links']:
       self._add_footnotes()
 
     self._fix_image_floats()
@@ -278,6 +296,8 @@ class Readability(object):
       else:
         self._fsoup.find('div', attrs={'id': 'readInner'}).append(footnotesWrapper)
 
+    readable_links_uri = self._conf.get('service_uri')
+    make_readable_links = self._conf['readable_footnote_links'] and readable_links_uri
 
     linkCount = len(articleFootnotes.findAll('li'))
     for link in self._fsoup.findAll('a'):
@@ -289,26 +309,38 @@ class Readability(object):
         continue
         
       linkCount += 1
-      footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', link.get('href'))])
-      footnoteLink.setString(link['href'])
-      footnoteLink['name'] = "readabilityFootnoteLink-%s" % linkCount
-      
+
       footnote = Tag(self._fsoup, 'li')
-      footnote.setString("<small>%s <sup><a href='#readabilityLink-%s' title='Jump to Link in Article'>^back</a></sup></small> " % (footnoteLink, linkCount))
+      if make_readable_links:
+        url_bits = urlparse.urlparse(link['href'])
+        footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', readable_links_uri % urllib.quote(link['href']))])
+        footnoteLink.setString("".join(url_bits[1:]))
+        footnoteLink['name'] = "readabilityFootnoteLink-%s" % linkCount
+
+        footnote.setString("<small>%s</small> (<small><a href='%s'>%s</a></small>) <small><a href='#readabilityLink-%s' title='Jump to Link in Article'>back &#8617;</a></small>" %
+                           (footnoteLink, link['href'], url_bits[1], linkCount))
+      else:
+        footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', link.get('href'))])
+        footnoteLink.setString(link['href'])
+        footnoteLink['name'] = "readabilityFootnoteLink-%s" % linkCount
+        footnote.setString("<small>%s</small> <small>(<a href='#readabilityLink-%s' title='Jump to Link in Article'>back &#8617;</a>)</small> " % (footnoteLink, linkCount))
 
 
-      refLinkSup = Tag(self._fsoup, 'sup')
       refLink = Tag(self._fsoup, 'a', attrs=[('href', '#readabilityFootnoteLink-%s' % linkCount),
                                              ('class', 'readability-DoNotFootnote')])
-      refLink.setString("[&nbsp;%s&nbsp;]" % linkCount)
+      refLink.setString("[%s]" % linkCount)
+
+      refLinkSup = Tag(self._fsoup, 'sup')
       refLinkSup.append(refLink)
 
-      olink = Tag(self._fsoup, 'a', attrs=[('href', link['href']),
-                                           ('name', "readabilityLink-%s" % linkCount)])
-      olink.setString(self.getInnerText(link))
+      replLink = Tag(self._fsoup, 'a', attrs=[('href', link['href']),
+                                              ('name', "readabilityLink-%s" % linkCount)])
+      replLink.setString(self.getInnerText(link))
+
       replElem = Tag(self._fsoup, 'span')
-      replElem.append(olink)
+      replElem.append(replLink)
       replElem.append(refLinkSup)
+
       link.replaceWith(replElem)
 
       articleFootnotes.append(footnote)
@@ -390,7 +422,7 @@ class Readability(object):
       if ta.string:
         ta.setString(ta.string.replace('<', '&lt;').replace('>', '&gt;'))
 
-  def _get_article_title(self):
+  def _getArticleTitle(self):
     articleTitle = Tag(self._fsoup, 'h1')
     title_element = self._osoup.find('title')
     candidate_title = None
@@ -405,7 +437,6 @@ class Readability(object):
 
     if not candidate_title:
       return articleTitle
-
 
     alt_candidate_title = wordSplitRe.sub(' ', unescape(candidate_title))
     title_words = {}
@@ -459,33 +490,35 @@ class Readability(object):
 
     dbg("_get_article_title::possible titles: %s" % possible_titles)
     
-    if len(possible_titles) == 0:
+    if not len(possible_titles): # there aren't multiple possible titles
+      if candidate_title:
+        candidate_title = candidate_title.strip()
       articleTitle.setString(candidate_title)
       return articleTitle
 
     max_score = 0
     best_candidate = None
-    score_tuple = None
     for inner_text, scoret in possible_titles.items():
       if scoret[0] > max_score:
         best_candidate = inner_text
         max_score = scoret[0]
-        score_tuple = scoret
 
     if best_candidate:
       if alt_candidate_title.find(wordSplitRe.sub(' ', unescape(best_candidate))) > -1:
-        dbg("_get_article_title::title best_candidate (success:%s:%s): '%s' (page title:%s)" % (score_tuple[0], score_tuple[2], best_candidate.encode('utf8'), candidate_title.encode('utf8')))
         candidate_title = best_candidate
-      elif max_score > 0:
-        dbg("_get_article_title::title best_candidate (unsure :%s:%s): '%s' (page title:%s)" % (score_tuple[0], score_tuple[2], best_candidate.encode('utf8'), candidate_title.encode('utf8')))
-      else:
-        dbg("_get_article_title::title best_candidate (failure:%s:%s): '%s' (page title:%s)" % (score_tuple[0], score_tuple[2], best_candidate.encode('utf8'), candidate_title.encode('utf8')))
+#        dbg("_get_article_title::title best_candidate (success:%s:%s): '%s' (page title:%s)" % (score_tuple[0], score_tuple[2], best_candidate.encode('utf8'), candidate_title.encode('utf8')))
+#      elif max_score > 0:
+#        dbg("_get_article_title::title best_candidate (unsure :%s:%s): '%s' (page title:%s)" % (score_tuple[0], score_tuple[2], best_candidate.encode('utf8'), candidate_title.encode('utf8')))
+#      else:
+#        dbg("_get_article_title::title best_candidate (failure:%s:%s): '%s' (page title:%s)" % (score_tuple[0], score_tuple[2], best_candidate.encode('utf8'), candidate_title.encode('utf8')))
+    if candidate_title:
+      candidate_title = candidate_title.strip()
     articleTitle.setString(candidate_title)
 
     return articleTitle
 
 
-  def grabArticle(self):
+  def _grabArticle(self):
     def match_unlikely_candidates(node):
       if not isinstance(node, Tag):
         return False
@@ -496,7 +529,7 @@ class Readability(object):
         unlikelyCandidatesRe.search(unlikelyMatchString) and \
         not okMaybeItsACandidateRe.search(unlikelyMatchString)
 
-    if self._flag_strip_unlikelys:
+    if self._conf['strip_unlike']:
       for node in self._osoup.body.findAll(match_unlikely_candidates):
         dbg("Removing unlikely candidate - " + node.get('class', '') + node.get('id', ''))
         node.extract()
@@ -654,21 +687,21 @@ class Readability(object):
     self.prepArticle(articleContent)
 
     if len(get_inner_text(articleContent)) < 250:
-      if self._flag_strip_unlikelys:
-        self._flag_strip_unlikelys = False
+      if self._conf['strip_unlike']:
+        self._conf['strip_unlike'] = False
         self._osoup = ICantBelieveItsBeautifulSoup(self.content)
         self._prepare_document()
-        return self.grabArticle()
-      if self._flag_weight_classes:
-        self._flag_weight_classes = False
+        return self._grabArticle()
+      if self._conf['weight_classes']:
+        self._conf['weight_classes'] = False
         self._osoup = ICantBelieveItsBeautifulSoup(self.content)
         self._prepare_document()
-        return self.grabArticle()
-      if self._flag_clean_conditionally:
-        self._flag_clean_conditionally = False
+        return self._grabArticle()
+      if self._conf['clean_conditionally']:
+        self._conf['clean_conditionally'] = False
         self._osoup = ICantBelieveItsBeautifulSoup(self.content)
         self._prepare_document()
-        return self.grabArticle()
+        return self._grabArticle()
 
     return articleContent
 
@@ -823,7 +856,7 @@ class Readability(object):
 #    dbg("initializeNode2: %s (%s:%s): %d " % (node.name, node.get('class', ''), node.get('id', ''), node.readability['contentScore']))
 
   def getClassWeight(self, node):
-    if not self._flag_weight_classes:
+    if not self._conf['weight_classes']:
       return 0
     
     weight = 0
@@ -3130,7 +3163,7 @@ if __name__ == '__main__':
   import urllib2
   response = urllib2.urlopen(sys.argv[1])
   html = response.read()
-  df = Readability(html, url=sys.argv[1], footnote_links=False)
+  df = Readability(html, url=sys.argv[1], footnote_links=True, readable_footnote_links=True, service_uri='http://ahrefs.appspot.com/g?u=%s')
   df.process_document()
   if __OUTPUT__:
     print df.get_html(prettyPrint=True)
