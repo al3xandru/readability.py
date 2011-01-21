@@ -48,6 +48,12 @@ wordSplitRe = re.compile('(\s|&nbsp;|&#160;|&#xA0)+', re.UNICODE)
 READ_STYLES = ('style-newspaper', 'style-novel', 'style-athelas', 'style-ebook', 'style-apertura')
 READ_MARGINS = ('margin-x-narrow', 'margin-narrow', 'margin-medium', 'margin-wide', 'margin-x-wide')
 SIZES = ('size-x-small', 'size-small', 'size-medium', 'size-large', 'size-x-large')
+MARGIN_RATIO = {'margin-x-narrow': 0.95,
+                'margin-narrow': 0.85,
+                'margin-medium': 0.75,
+                'margin-wide': 0.55,
+                'margin-x-wide': 0.35
+}
 
 # TODO:
 # - frames (?)
@@ -199,6 +205,9 @@ class Readability(object):
 
   def _post_process_content(self):
     ''' Adds footnotes for links, fixes images floats '''
+    # remove extra class attributes
+    self._clean_class_attr()
+
     self._fix_lists()
     
     self._fix_links()
@@ -208,8 +217,6 @@ class Readability(object):
 
     self._fix_image_floats()
 
-    # remove extra class attributes
-    self._clean_class_attr()
 
   def _clean_class_attr(self):
     real_body = self._fsoup.find('div', attrs={'id': 'readability-content'})
@@ -313,16 +320,18 @@ class Readability(object):
       footnote = Tag(self._fsoup, 'li')
       if make_readable_links:
         url_bits = urlparse.urlparse(link['href'])
-        footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', readable_links_uri % urllib.quote(link['href']))])
+        footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', readable_links_uri % urllib.quote(link['href'])),
+                                                    ('class', 'readability-DoNotFootnote'),
+                                                    ('name', "readabilityFootnoteLink-%s" % linkCount)])
         footnoteLink.setString("".join(url_bits[1:]))
-        footnoteLink['name'] = "readabilityFootnoteLink-%s" % linkCount
 
         footnote.setString("<small>%s</small> (<small><a href='%s'>%s</a></small>) <small><a href='#readabilityLink-%s' title='Jump to Link in Article'>back &#8617;</a></small>" %
                            (footnoteLink, link['href'], url_bits[1], linkCount))
       else:
-        footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', link.get('href'))])
+        footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', link.get('href')),
+                                                    ('class', 'readability-DoNotFootnote'),
+                                                    ('name', "readabilityFootnoteLink-%s" % linkCount)])
         footnoteLink.setString(link['href'])
-        footnoteLink['name'] = "readabilityFootnoteLink-%s" % linkCount
         footnote.setString("<small>%s</small> <small>(<a href='#readabilityLink-%s' title='Jump to Link in Article'>back &#8617;</a>)</small> " % (footnoteLink, linkCount))
 
 
@@ -349,7 +358,7 @@ class Readability(object):
       footnotesWrapper['style'] = 'display:block;'
 
   def _fix_image_floats(self):
-    imageWidthThreshold = 800 * 0.55
+    imageWidthThreshold = 800 * MARGIN_RATIO[self._conf['read_margin']]
 
     if self._url:
       bits = urlparse.urlsplit(self._url)
@@ -365,12 +374,33 @@ class Readability(object):
           img['src'] = rel_uri + img_src
           
     for img in self._fsoup.findAll('img'):
-      try:
-        width = int(img.get('width'), 0)
-      except:
-        width = 0
-      if width > imageWidthThreshold:
-        img['class'] = "blockImage readabilityImg %s" % img.get("class", '')      
+      width = self._get_size(img.get('width'))
+      height = self._get_size(img.get('height'))
+      if width:
+        if width >= imageWidthThreshold:
+          img['class'] = "blockImage readabilityImg %s" % img.get("class", '')
+          img['width'] = "%spx" % (width * MARGIN_RATIO[self._conf['read_margin']])
+          if height:
+            img['height'] = "%spx" % (height * MARGIN_RATIO[self._conf['read_margin']])
+      else:
+        img['style'] = "{max-width:%spx}" % (800 * MARGIN_RATIO[self._conf['read_margin']])
+
+  def _get_size(self, dim):
+    if not dim:
+      return None
+    try:
+      return int(dim)
+    except ValueError:
+      pass
+    digits = []
+    for c in dim:
+      if c.isdigit():
+        digits.append(c)
+      else:
+        break
+    if digits:
+      return int(''.join(digits))
+    return None
 
   def _prepare_document(self):
     # let's firstly fix as much as possible the content
@@ -3163,7 +3193,9 @@ if __name__ == '__main__':
   import urllib2
   response = urllib2.urlopen(sys.argv[1])
   html = response.read()
-  df = Readability(html, url=sys.argv[1], footnote_links=True, readable_footnote_links=True, service_uri='http://ahrefs.appspot.com/g?u=%s')
+  df = Readability(html, url=sys.argv[1], footnote_links=True,
+                   readable_links=True, service_uri='http://ahrefs.appspot.com/g?u=%s',
+                   read_margin='margin-wide')
   df.process_document()
   if __OUTPUT__:
     print df.get_html(prettyPrint=True)
