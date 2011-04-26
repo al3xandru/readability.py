@@ -118,13 +118,7 @@ var readability = {
 
         /* Apply user-selected styling */
         document.body.className = readStyle;
-        if (readStyle == "style-athelas" || readStyle == "style-apertura"){
-            aBody.className = readStyle + " rdbTypekit";
-        }
-        else {
-            aBody.className = readStyle;
-        }
-        aBody.className += " " + readMargin + " " + readSize;
+        aBody.className = readStyle + " " + readMargin + " " + readSize;
 
         if(typeof(readConvertLinksToFootnotes) !== 'undefined' && readConvertLinksToFootnotes === true) {
             readability.convertLinksToFootnotes = true;
@@ -145,9 +139,9 @@ var readability = {
 
         if(readability.frameHack)
         {
-            var readOverlay = document.getElementById('readOverlay');
-            readOverlay.style.height = '100%';
-            readOverlay.style.overflow = 'auto';
+            var articleDiv = document.getElementById('readability-article');
+            articleDiv.style.height = '100%';
+            articleDiv.style.overflow = 'auto';
         }
 
         /**
@@ -161,7 +155,7 @@ var readability = {
                 rootWarning.innerHTML = "<em>Readability</em> was intended for use on individual articles and not home pages. " +
                     "If you'd like to try rendering this page anyway, <a onClick='javascript:document.getElementById(\"readability-warning\").style.display=\"none\";document.getElementById(\"readability-content\").style.display=\"block\";'>click here</a> to continue.";
 
-            innerDiv.insertBefore( rootWarning, articleContent );
+            aBody.insertBefore( rootWarning, articleContent );
         }
 
         readability.postProcessContent(articleContent);
@@ -170,6 +164,7 @@ var readability = {
 
         /* If we're using the Typekit library, select the font */
         if (readStyle == "style-athelas" || readStyle == "style-apertura") {
+            aBody.className = readStyle + " rdbTypekit";
             readability.useRdbTypekit();
         }
 
@@ -379,6 +374,7 @@ var readability = {
         }
 
         document.body.id = "readabilityBody";
+        document.body.removeAttribute('onload');
 
         var frames = document.getElementsByTagName('frame');
         if(frames.length > 0)
@@ -431,6 +427,13 @@ var readability = {
                 document.styleSheets[k].disabled = true;
             }
         }
+        /* some seem to be out wrong-placed */
+        var linkTags = document.getElementsByTagName("link");
+        for(var st=0,l=linkTags.length; st < l; st++) {
+            if (linkTags[k].href !== null && linkTags[k].href.lastIndexOf("readability") == -1) {
+                linkTags[k].disabled = true;
+            }
+        }
 
         /* Remove all style tags in head (not doing this on IE) - TODO: Why not? */
         var styleTags = document.getElementsByTagName("style");
@@ -450,26 +453,21 @@ var readability = {
      * @return void
     **/
     addFootnotes: function(articleContent) {
-        var footnotesWrapper = document.getElementById('readability-footnotes'),
-            articleFootnotes = document.getElementById('readability-footnotes-list');
-        
+        var footnotesWrapper = document.getElementById('readability-article-footer');
+       
+        /* this should never happen */ 
         if(!footnotesWrapper) {
+            dbg("div#readability-article-footer not found");
             footnotesWrapper               = document.createElement("DIV");
-            footnotesWrapper.id            = 'readability-footnotes';
-            footnotesWrapper.innerHTML     = '<h3>References</h3>';
-            footnotesWrapper.style.display = 'none'; /* Until we know we have footnotes, don't show the references block. */
-            
-            articleFootnotes    = document.createElement('ol');
-            articleFootnotes.id = 'readability-footnotes-list';
-            
-            footnotesWrapper.appendChild(articleFootnotes);
-    
-            var readFooter = document.getElementById('readFooter');
-            
-            if(readFooter) {
-                readFooter.parentNode.insertBefore(footnotesWrapper, readFooter);
-            }
+            footnotesWrapper.id            = 'readability-article-footer';
         }
+        var footnotes = document.createElement("DIV");
+        footnotes.id = "readability-article-footnotes";
+        footnotes.style.display = 'none'; /* Until we know we have footnotes, don't show the references block. */
+        footnotes.innerHTML = "<hr/>";
+
+        var articleFootnotes    = document.createElement('ol');
+        footnotes.appendChild( articleFootnotes );
 
         var articleLinks = articleContent.getElementsByTagName('a');
         var linkCount    = articleFootnotes.getElementsByTagName('li').length;
@@ -515,7 +513,7 @@ var readability = {
         }
 
         if(linkCount > 0) {
-            footnotesWrapper.style.display = 'block';
+            footnotes.style.display = 'block';
         }
     },
 
