@@ -101,6 +101,9 @@ class Readability(object):
       raise ValueError('content cannot be converted to unicode')
 #    dbg("content: %s" % self._osoup)
     self._fsoup = ICantBelieveItsBeautifulSoup(Readability.OUTPUT_BODY % self._conf)
+    self._articleBody = u''
+    self._articleTitle = u''
+    self._articleFootnotes = []
 
   def get_html(self, prettyPrint=False, removeComments=True):
     if removeComments:
@@ -115,6 +118,15 @@ class Readability(object):
     Note that this object is a copy and modifying it will not
     modify the real output"""
     return ICantBelieveItsBeautifulSoup(self.get_html(removeComments=removeComments))
+
+  def get_title(self):
+    return self._articleTitle
+
+  def get_article_body(self):
+    return self._articleBody.renderContents(prettyPrint=False)
+
+  def get_article_footnotes(self):
+    return self._articleFootnotes
 
   def process_document(self):
     self._prepare_document()
@@ -152,6 +164,8 @@ class Readability(object):
             continuationparagraph.append("&nbsp;")
           articleContent.append(continuationparagraph)
 
+    self._articleBody = articleContent
+    
     divInner = self._fsoup.find('div', attrs={'id':'readInner'})
     divInner.append(article_title)
 #    if self._url:
@@ -322,7 +336,7 @@ class Readability(object):
         url_bits = urlparse.urlparse(link['href'])
         footnoteLink = Tag(self._fsoup, 'a', attrs=[('href', readable_links_uri % urllib.quote(link['href'])),
                                                     ('class', 'readability-DoNotFootnote'),
-                                                    ('name', "readabilityFootnoteLink-%s" % linkCount)])
+                                                    ('name', "rfl-%s" % linkCount)])
         footnoteLink.setString("".join(url_bits[1:]))
 
         footnote.setString("<small>%s</small> (<small><a href='%s'>%s</a></small>) <small><a href='#readabilityLink-%s' title='Jump to Link in Article'>back &#8617;</a></small>" %
@@ -332,21 +346,22 @@ class Readability(object):
                                                     ('class', 'readability-DoNotFootnote'),
                                                     ('name', "readabilityFootnoteLink-%s" % linkCount)])
         footnoteLink.setString(link['href'])
-        footnote.setString("<small>%s</small> <small>(<a href='#readabilityLink-%s' title='Jump to Link in Article'>back &#8617;</a>)</small> " % (footnoteLink, linkCount))
+        footnote.setString("<small>%s</small> <small>(<a href='#rl-%s' title='Jump to Link in Article'>back &#8617;</a>)</small> " % (footnoteLink, linkCount))
 
+      self._articleFootnotes.append((link['href'], footnoteLink.string))
 
-      refLink = Tag(self._fsoup, 'a', attrs=[('href', '#readabilityFootnoteLink-%s' % linkCount),
+      refLink = Tag(self._osoup, 'a', attrs=[('href', '#rfl-%s' % linkCount),
                                              ('class', 'readability-DoNotFootnote')])
       refLink.setString("[%s]" % linkCount)
 
-      refLinkSup = Tag(self._fsoup, 'sup')
+      refLinkSup = Tag(self._osoup, 'sup')
       refLinkSup.append(refLink)
 
-      replLink = Tag(self._fsoup, 'a', attrs=[('href', link['href']),
-                                              ('name', "readabilityLink-%s" % linkCount)])
+      replLink = Tag(self._osoup, 'a', attrs=[('href', link['href']),
+                                              ('name', "rl-%s" % linkCount)])
       replLink.setString(self.getInnerText(link))
 
-      replElem = Tag(self._fsoup, 'span')
+      replElem = Tag(self._osoup, 'span', attrs=[('class', 'fnlnk')])
       replElem.append(replLink)
       replElem.append(refLinkSup)
 
@@ -524,6 +539,7 @@ class Readability(object):
       if candidate_title:
         candidate_title = candidate_title.strip()
       articleTitle.setString(candidate_title)
+      self._articleTitle = candidate_title
       return articleTitle
 
     max_score = 0
@@ -543,7 +559,9 @@ class Readability(object):
 #        dbg("_get_article_title::title best_candidate (failure:%s:%s): '%s' (page title:%s)" % (score_tuple[0], score_tuple[2], best_candidate.encode('utf8'), candidate_title.encode('utf8')))
     if candidate_title:
       candidate_title = candidate_title.strip()
+
     articleTitle.setString(candidate_title)
+    self._articleTitle = candidate_title
 
     return articleTitle
 
