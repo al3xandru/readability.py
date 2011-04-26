@@ -91,8 +91,10 @@ var readability = {
         /* Build readability's DOM tree */
         var articleDiv = document.createElement("DIV");
         var aHeader  = document.createElement("DIV");
+        var aHost = document.createElement("DIV");
         var aBody = document.createElement("DIV");
         var aFooter = document.createElement("DIV");
+        var aOriginalLink = document.createElement("DIV");
 
         var articleTools   = readability.getArticleTools();
         var articleTitle   = readability.getArticleTitle();
@@ -113,8 +115,10 @@ var readability = {
 
         articleDiv.id   = "readability-article";
         aHeader.id      = "readability-article-header";
+        aHost.id        = "readability-article-host";
         aBody.id        = "readability-article-body";
         aFooter.id      = "readability-article-footer";
+        aOriginalLink   = "readability-article-url";
 
         /* Apply user-selected styling */
         document.body.className = readStyle;
@@ -125,10 +129,14 @@ var readability = {
         }
 
         /* Glue the structure of our document together. */
+        aHost.innerHTML = "[<a href=\"" + window.location.href + "\">" + window.location.host + "</a>]";
+        aOriginalLink.innerHTML = "<a href=\"" + window.location.href + "\">" + window.location.href + "</a>";
         
         articleDiv.appendChild( aHeader );
         articleDiv.appendChild( aBody );
         articleDiv.appendChild( aFooter );
+        
+        aHeader.appendChild( aHost );
         aHeader.appendChild( articleTitle );
         aBody.appendChild( articleContent );
 
@@ -159,13 +167,14 @@ var readability = {
         }
 
         readability.postProcessContent(articleContent);
+        aFooter.appendChild( aOriginalLink );
 
         window.scrollTo(0, 0);
 
         /* If we're using the Typekit library, select the font */
         if (readStyle == "style-athelas" || readStyle == "style-apertura") {
             aBody.className = readStyle + " rdbTypekit";
-            readability.useRdbTypekit();
+            //readability.useRdbTypekit();
         }
 
         if (nextPageLink) {
@@ -431,7 +440,7 @@ var readability = {
         var linkTags = document.getElementsByTagName("link");
         for(var st=0,l=linkTags.length; st < l; st++) {
             if (linkTags[k].href !== null && linkTags[k].href.lastIndexOf("readability") == -1) {
-                linkTags[k].disabled = true;
+                linkTags[k].parentNode.removeChild(linkTags[k]);
             }
         }
 
