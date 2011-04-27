@@ -494,7 +494,9 @@ var readability = {
      * @return void
     **/
     addFootnotes: function(articleContent) {
-        var footnotesWrapper = document.getElementById('readability-article-footer');
+        var footnotesWrapper = document.getElementById('readability-article-footer'),
+            footnotes = document.getElementById('readability-article-footnotes'),
+            articleFootnotes;
        
         /* this should never happen */ 
         if(!footnotesWrapper) {
@@ -502,14 +504,19 @@ var readability = {
             footnotesWrapper               = document.createElement("DIV");
             footnotesWrapper.id            = 'readability-article-footer';
         }
-        var footnotes = document.createElement("DIV");
-        footnotes.id = "readability-article-footnotes";
-        footnotes.style.display = 'none'; /* Until we know we have footnotes, don't show the references block. */
-        footnotes.innerHTML = "<hr/>";
+        if(!footnotes) {
+            var footnotes = document.createElement("DIV");
+            footnotes.id = "readability-article-footnotes";
+            footnotes.style.display = 'none'; /* Until we know we have footnotes, don't show the references block. */
+            footnotes.innerHTML = "<hr/>";
+            articleFootnotes    = document.createElement('ol');
+            footnotes.appendChild( articleFootnotes );
 
-        var articleFootnotes    = document.createElement('ol');
-        footnotes.appendChild( articleFootnotes );
-        footnotesWrapper.appendChild( footnotes );
+            footnotesWrapper.appendChild( footnotes );
+        }
+        else {
+            articleFootnotes = footnotes.getElementsByTagName('ol')[0];
+        }
 
         var articleLinks = articleContent.getElementsByTagName('a');
         var linkCount    = articleFootnotes.getElementsByTagName('li').length;
