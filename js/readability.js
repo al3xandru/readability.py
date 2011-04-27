@@ -366,7 +366,7 @@ var readability = {
         var confFooter = document.createElement("DIV");
         confFooter.id  = "readability-confs";
         confFooter.innerHTML = [
-            '<div id="conftoggle"><a href="#" onclick=";return false;">&#x21b5;</a></div>',
+            '<div id="conftoggle"><a href="#" onclick="readability.toggle(\'confopts\');return false;">&#x21b5;</a></div>',
             '<div id="confopts">',
             '<p>',
             '<b>Margin</b> (x-narrow, narrow, medium, wide, x-wide):',
@@ -378,7 +378,7 @@ var readability = {
             '<input type="text" name="readability-size-conf" id="readability-size-conf" />',
             '<input type="button" value="Size" onclick="readability.updateSize(document.getElementById(\'readability-size-conf\').value);return false" />',
             '</p>',
-            '<p style="display:none">',
+            '<p>',
             '<b>Style</b> (Chaparral, Warnock, Myriad, Museo, Inspira):',
             '<input type="text" name="readability-style-conf" id="readability-style-conf" />',
             '<input type="button" value="Style" onclick="readability.updateStyle(document.getElementById(\'readability-style-conf\').value);return false" />',
@@ -1847,7 +1847,7 @@ var readability = {
         var artClasses = artEl.className.split(' ');
         var newClasses = ["size-" + val.toLowerCase()];
         for(var i=0,l=artClasses.length; i < l; i++) {
-            if(artClasses[i].substring(0, 6) === 'size') continue;
+            if(artClasses[i].substring(0, 4) === 'size') continue;
             newClasses.push(artClasses[i]);
         }
         artEl.className = newClasses.join(' ');                    
@@ -1855,7 +1855,16 @@ var readability = {
 
     updateStyle: function(val) {
         /* on body and #readability-article-body */
+        val = 'style-' + val.toLowerCase();
+        document.body.className = val;
+        document.getElementById('readability-article-body').className = val;
     },
+    toggle: function(elid) {
+        var el = document.getElementById(elid);
+        var display = el.style.display;
+        if (display === 'none') {el.style.display = 'block'}
+        else {el.style.display = 'none'};
+    }
 };
 
 readability.init();
