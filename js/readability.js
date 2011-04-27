@@ -438,9 +438,10 @@ var readability = {
         }
         /* some seem to be out wrong-placed */
         var linkTags = document.getElementsByTagName("link");
-        for(var st=0,l=linkTags.length; st < l; st++) {
+        for(var k=0; k<linkTags.length; k++) {
             if (linkTags[k].href !== null && linkTags[k].href.lastIndexOf("readability") == -1) {
                 linkTags[k].parentNode.removeChild(linkTags[k]);
+                k -= 1;
             }
         }
 
