@@ -138,8 +138,8 @@ var readability = {
         articleDiv.appendChild( aFooter );
         
         aHeader.appendChild( aHost );
-        aHeader.appendChild( articleTitle );
         aHeader.appendChild( aOriginalLink );
+        aHeader.appendChild( articleTitle );
         aBody.appendChild( articleContent );
 
         /* Clear the old HTML, insert the new content. */
