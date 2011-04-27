@@ -143,3 +143,7 @@ body.style-inspira {
     text-indent: -9999px;
     width: 24px;
 }
+#readability-confs div#confopts table {
+    text-align: left; 
+    margin: 0 auto;
+}
