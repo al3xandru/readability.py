@@ -173,7 +173,7 @@ var readability = {
         window.scrollTo(0, 0);
 
         /* If we're using the Typekit library, select the font */
-        if (readStyle != "style-chapa" || readStyle == "style-apertura") {
+        if (readStyle == "style-athelas" || readStyle == "style-apertura") {
             aBody.className = readStyle + " rdbTypekit";
             //readability.useRdbTypekit();
         }
@@ -515,7 +515,7 @@ var readability = {
             footnoteLink.name       = 'rfl-' + linkCount;
             
             footnote.appendChild(footnoteLink);
-            footnote.innerHTML += " (" + (footnoteLink.title ? footnoteLink.title : linkText) + ")" +  "  <a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8618;</a>";
+            //footnote.innerHTML += " (" + (footnoteLink.title ? footnoteLink.title : linkText) + ")" +  "  <a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8618;</a>";
             
             articleFootnotes.appendChild(footnote);
         }
