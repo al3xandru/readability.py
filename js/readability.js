@@ -139,7 +139,7 @@ var readability = {
         
         aHeader.appendChild( aHost );
         aHeader.appendChild( articleTitle );
-        aHeader.appendChild( aOriginalLink );
+        //aHeader.appendChild( aOriginalLink );
         aBody.appendChild( articleContent );
 
         /* Clear the old HTML, insert the new content. */
