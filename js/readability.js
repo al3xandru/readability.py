@@ -510,14 +510,12 @@ var readability = {
             articleLink.name        = 'rl-' + linkCount;
             try { articleLink.style.color = 'inherit'; } catch(e) {} /* IE7 doesn't like inherit. */
 
-            <a href="{{request_handler.path_url}}?u={{ link|urlencode }}">{{ txt|safe }}</a> <a title="Jump back to footnote {{ forloop.counter }} in the text" rev="footnote" href="#rl-{{ forloop.counter }}" class="footnoteBackLink">&#8617;</a>
-            footnote.innerHTML      = "<a href='#readabilityLink-" + linkCount + "' title='Jump to Link in Article'>^</a></sup></small> ";
+            footnote.innerHTML      = "<a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8617;</a>";
 
-            footnoteLink.innerHTML  = (footnoteLink.title ? footnoteLink.title : linkText);
+            footnoteLink.innerHTML  = linkDomain + "<small>(" + (footnoteLink.title ? footnoteLink.title : linkText) + ")</small>";
             footnoteLink.name       = 'rfl-' + linkCount;
             
             footnote.appendChild(footnoteLink);
-            footnote.innerHTML = footnote.innerHTML + "<small> (" + linkDomain + ")</small>";
             
             articleFootnotes.appendChild(footnote);
         }
