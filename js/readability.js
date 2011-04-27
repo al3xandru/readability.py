@@ -122,7 +122,8 @@ var readability = {
 
         /* Apply user-selected styling */
         document.body.className = readStyle;
-        aBody.className = readStyle + " " + readMargin + " " + readSize;
+        articleDiv.className = readMargin + " " + readSize;
+        aBody.className = readStyle; 
 
         if(typeof(readConvertLinksToFootnotes) !== 'undefined' && readConvertLinksToFootnotes === true) {
             readability.convertLinksToFootnotes = true;
@@ -498,7 +499,7 @@ var readability = {
             linkCount++;
 
             /** Add a superscript reference after the article link */
-            refLink.innerHTML = "<sup>[<a class='dnf' href='#rfl-'" + linkCount + "'>" + linkCount + "</a>]</sup>";
+            refLink.innerHTML = "<sup>[<a class='dnf' href='#rfl-" + linkCount + "'>" + linkCount + "</a>]</sup>";
             // try { refLink.style.color = 'inherit'; } catch(e) {} /* IE7 doesn't like inherit. */
             
             if(articleLink.parentNode.lastChild == articleLink) {
@@ -510,9 +511,9 @@ var readability = {
             articleLink.name        = 'rl-' + linkCount;
             try { articleLink.style.color = 'inherit'; } catch(e) {} /* IE7 doesn't like inherit. */
 
-            footnote.innerHTML      = "<a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8617;</a>";
+            footnote.innerHTML      = "<a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8618;</a>";
 
-            footnoteLink.innerHTML  = linkDomain + "<small>(" + (footnoteLink.title ? footnoteLink.title : linkText) + ")</small>";
+            footnoteLink.innerHTML  = linkDomain + " (" + (footnoteLink.title ? footnoteLink.title : linkText) + ")";
             footnoteLink.name       = 'rfl-' + linkCount;
             
             footnote.appendChild(footnoteLink);
