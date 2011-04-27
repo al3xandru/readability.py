@@ -131,7 +131,7 @@ var readability = {
 
         /* Glue the structure of our document together. */
         aHost.innerHTML = "[<a href=\"" + window.location.href + "\">" + window.location.host + "</a>]";
-        aOriginalLink.innerHTML =  window.location.href;
+        aOriginalLink.innerHTML =  "<a href=\"" + window.location.href + "\">link</a>";
         
         articleDiv.appendChild( aHeader );
         articleDiv.appendChild( aBody );
