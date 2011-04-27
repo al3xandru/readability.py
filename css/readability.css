@@ -51,11 +51,11 @@ body.style-inspira {
 #readability-article.size-medium {font-size:100%}
 #readability-article.size-large {font-size:112.5%}
 #readability-article.size-x-large {font-size:150%}
-#readability-article.margin-x-narrow {width:30%;}
-#readability-article.margin-narrow {width:45%}
+#readability-article.margin-x-narrow {width:90%;}
+#readability-article.margin-narrow {width:75%}
 #readability-article.margin-medium {width:65%}
-#readability-article.margin-wide {width:75%}
-#readability-article.margin-x-wide {width:90%}
+#readability-article.margin-wide {width:45%}
+#readability-article.margin-x-wide {width:30%}
 
 #readability-article-body {
     text-align:justify;
@@ -118,32 +118,21 @@ body.style-inspira {
     width: 8em;
 }
 
-#configuration {
+#readability-confs {
     border-top:1px dotted #666;
     text-align:center;
     margin:2em auto 0;
 }
-#configuration div#conftoggle {
+#readability-confs div#conftoggle {
     text-align:center;
 }
-#configuration div#conftoggle a {
+#readability-confs div#conftoggle a {
     text-decoration:none;
-    background: url("button_disclose.png") no-repeat scroll left top transparent;
+    background: url("http://github.com/al3xandru/readability.py/raw/master/css/button_disclose.png") no-repeat scroll left top transparent;
     display: block;
     height: 15px;
     margin: 10px auto 20px;
     text-indent: -9999px;
     width: 24px;
-}
-#configuration table {
-    width:50%;
-    margin:auto;
-}
-#configuration th {
-    text-align:left;
-    padding-left:15px;
-}
-#configuration td {
-    text-align:left;vertical-align:top;
 }
 

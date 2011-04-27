@@ -147,6 +147,7 @@ var readability = {
         document.body.innerHTML = "";
         document.body.insertBefore(articleDiv, document.body.firstChild);
         document.body.removeAttribute('style');
+        document.body.appendChild( readability.getConfigurationFooter() );
 
         if(readability.frameHack)
         {
@@ -359,6 +360,34 @@ var readability = {
         "</div>"].join('');
                 
         return articleFooter;
+    },
+
+    getConfigurationFooter: function() {
+        var confFooter = document.createElement("DIV");
+        confFooter.id  = "readability-confs";
+        confFooter.innerHTML = [
+            '<div id="conftoggle"><a href="#" onclick=";return false;">&#x21b5;</a></div>',
+            '<div id="confopts">',
+            '<p>',
+            '<b>Margin</b> (x-narrow, narrow, medium, wide, x-wide):',
+            '<input type="text" name="readability-margin-conf" id="readability-margin-conf" />',
+            '<button type="button" onclick="readability.updateMargin(document.getElementById(\"readability-margin-conf\").value);return false"/>',
+            '</p>',
+            '<p>',
+            '<b>Size</b> (x-small, small, medium, large, x-large):',
+            '<input type="text" name="readability-size-conf" id="readability-size-conf" />',
+            '<button type="button" onclick="readability.updateSize(document.getElementById(\"readability-size-conf\").value);return false"/>',
+            '</p>',
+            '<p style="display:none">',
+            '<b>Style</b> (Chaparral, Warnock, Myriad, Museo, Inspira):',
+            '<input type="text" name="readability-style-conf" id="readability-style-conf" />',
+            '<button type="button" onclick="readability.updateStyle(document.getElementById(\"readability-style-conf\").value);return false"/>',
+            '</p>',
+            '</div>',
+            '</div>'            
+        ].join('');
+
+        return confFooter;
     },
     
     /**
@@ -1798,8 +1827,35 @@ var readability = {
     
     removeFlag: function(flag) {
         readability.flags = readability.flags & ~flag;
-    }
+    },
+
+    updateMargin: function(val) {
+        /* on readability-article */
+        var artEl = document.getElementById('readability-article');
+        var artClasses = artEl.className.split(' ');
+        var newClasses = ["margin-" + val.toLowerCase()];
+        for(var i=0,l=artClasses.length; i < l; i++) {
+            if(artClasses[i].substring(0, 6) === 'margin') continue;
+            newClasses.push(artClasses[i]);
+        }
+        artEl.className = newClasses.join(' ');
+    },
     
+    updateSize: function(val) {
+        /* on readability-article */
+        var artEl = document.getElementById('readability-article');
+        var artClasses = artEl.className.split(' ');
+        var newClasses = ["size-" + val.toLowerCase()];
+        for(var i=0,l=artClasses.length; i < l; i++) {
+            if(artClasses[i].substring(0, 6) === 'size') continue;
+            newClasses.push(artClasses[i]);
+        }
+        artEl.className = newClasses.join(' ');                    
+    },
+
+    updateStyle: function(val) {
+        /* on body and #readability-article-body */
+    },
 };
 
 readability.init();
