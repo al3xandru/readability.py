@@ -139,6 +139,7 @@ var readability = {
         
         aHeader.appendChild( aHost );
         aHeader.appendChild( articleTitle );
+        aHeader.appendChild( aOriginalLink );
         aBody.appendChild( articleContent );
 
         /* Clear the old HTML, insert the new content. */
@@ -168,12 +169,11 @@ var readability = {
         }
 
         readability.postProcessContent(articleContent);
-        aFooter.appendChild( aOriginalLink );
 
         window.scrollTo(0, 0);
 
         /* If we're using the Typekit library, select the font */
-        if (readStyle == "style-athelas" || readStyle == "style-apertura") {
+        if (readStyle != "style-chapa" || readStyle == "style-apertura") {
             aBody.className = readStyle + " rdbTypekit";
             //readability.useRdbTypekit();
         }
@@ -511,12 +511,11 @@ var readability = {
             articleLink.name        = 'rl-' + linkCount;
             try { articleLink.style.color = 'inherit'; } catch(e) {} /* IE7 doesn't like inherit. */
 
-            footnote.innerHTML      = "<a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8618;</a>";
-
-            footnoteLink.innerHTML  = linkDomain + " (" + (footnoteLink.title ? footnoteLink.title : linkText) + ")";
+            footnoteLink.innerHTML  = linkDomain;
             footnoteLink.name       = 'rfl-' + linkCount;
             
             footnote.appendChild(footnoteLink);
+            footnote.innerHTML += " (" + (footnoteLink.title ? footnoteLink.title : linkText) + ")" +  "  <a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8618;</a>";
             
             articleFootnotes.appendChild(footnote);
         }

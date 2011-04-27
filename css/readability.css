@@ -3,6 +3,21 @@ body {
     /* color: #1D1916 */
 }
 /* background color based on style */
+body.style-chaparral {
+    background-color:#F2F2F2;
+}
+body.style-warnock {
+    background-color:#EDEBE8;
+}
+body.style-myriad {
+    background-color:#F8F8F5;
+}
+body.style-museo {
+    background-color:#F4EED9;
+}
+body.style-inspira {
+    background-color:#1D1916;
+}
 #readability-article {
     margin-left:auto;
     margin-right:auto;
@@ -35,6 +50,21 @@ body {
 
 /* font-families according to style */
 
+#readability-article.style-chaparral {
+    font-family: "Chaparral Pro", "chaparral-pro-1","chaparral-pro-2", Cambria,"Hoefler Text",Georgia, "Times New Roman",serif;
+}
+#readability-article.style-warnock {
+    font-family: "Warnock Pro", "warnock-pro-1","warnock-pro-2", Cambria,"Hoefler Text",Georgia, "Times New Roman",serif;
+}
+#readability-article.style-myriad {
+    font-family: "Myriad Pro", "myriad-pro-1","myriad-pro-2", Corbel, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#readability-article.style-museo {
+    font-family: "Museo", "museo-1","museo-2", Corbel, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#readability-article.style-inspira {
+    font-family: "GE Inspira Pitch", "GE Inspira", Corbel, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 #readability-article.size-x-small {font-size:75%;}
 #readability-article.size-small {font-size:87.5%}
 #readability-article.size-medium {font-size:100%}
