@@ -515,7 +515,7 @@ var readability = {
             footnoteLink.name       = 'rfl-' + linkCount;
             
             footnote.appendChild(footnoteLink);
-            //footnote.innerHTML += " (" + (footnoteLink.title ? footnoteLink.title : linkText) + ")" +  "  <a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8618;</a>";
+            footnote.innerHTML += " (" + (footnoteLink.title ? footnoteLink.title : linkText) + ")" +  "  <a href='#rl-" + linkCount + "' title='Jump to Link in Article'>&#8617;</a>";
             
             articleFootnotes.appendChild(footnote);
         }
