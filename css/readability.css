@@ -57,6 +57,14 @@ body.style-inspira {
 #readability-article.margin-wide {width:45%}
 #readability-article.margin-x-wide {width:30%}
 
+
+#readability-article-body p.page-separator {
+    background: url("http://github.com/al3xandru/readability.py/raw/master/css/break-bar-small.png") no-repeat scroll center bottom transparent;
+    margin: 2em auto;
+    text-align:center;
+    text-indent: -9999px;
+}
+
 #readability-article-body {
     text-align:justify;
     line-height:130%;
@@ -134,7 +142,4 @@ body.style-inspira {
     margin: 10px auto 20px;
     text-indent: -9999px;
     width: 24px;
-}
-#readability-confs #confsopts {
-    display:none;
 }

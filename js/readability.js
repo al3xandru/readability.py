@@ -52,7 +52,7 @@ var readability = {
         trim:                  /^\s+|\s+$/g,
         normalize:             /\s{2,}/g,
         killBreaks:            /(<br\s*\/?>(\s|&nbsp;?)*){1,}/g,
-        videos:                /http:\/\/(www\.)?(youtube|vimeo)\.com/i,
+        videos:                /http:\/\/(www\.)?(youtube|vimeo|brightcove|slideshare|blip)\./i,
         skipFootnoteLink:      /^\s*(\[?[a-z0-9]{1,2}\]?|^|edit|citation needed)\s*$/i,
         nextLink:              /(next|weiter|continue|>([^\|]|$)|»([^\|]|$))/i, // Match: next, continue, >, >>, » but not >|, »| as those usually mean last.
         prevLink:              /(prev|earl|old|new|<|«)/i
@@ -367,7 +367,7 @@ var readability = {
         confFooter.id  = "readability-confs";
         confFooter.innerHTML = [
             '<div id="conftoggle"><a href="#" onclick="readability.toggle(\'confopts\');return false;">&#x21b5;</a></div>',
-            '<div id="confopts">',
+            '<div id="confopts" style="display:none">',
             '<p>',
             '<b>Margin</b> (x-narrow, narrow, medium, wide, x-wide):',
             '<input type="text" name="readability-margin-conf" id="readability-margin-conf" />',
@@ -1581,7 +1581,7 @@ var readability = {
      **/
     clean: function (e, tag) {
         var targetList = e.getElementsByTagName( tag );
-        var isEmbed    = (tag == 'object' || tag == 'embed');
+        var isEmbed    = (tag == 'object' || tag == 'embed' || tag == 'iframe' );
         
         for (var y=targetList.length-1; y >= 0; y--) {
             /* Allow youtube and vimeo videos through as people usually want to see those. */
