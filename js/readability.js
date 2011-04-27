@@ -113,12 +113,12 @@ var readability = {
             nextPageLink = null;
         }
 
-        articleDiv.id   = "readability-article";
-        aHeader.id      = "readability-article-header";
-        aHost.id        = "readability-article-host";
-        aBody.id        = "readability-article-body";
-        aFooter.id      = "readability-article-footer";
-        aOriginalLink   = "readability-article-url";
+        articleDiv.id       = "readability-article";
+        aHeader.id          = "readability-article-header";
+        aHost.id            = "readability-article-host";
+        aBody.id            = "readability-article-body";
+        aFooter.id          = "readability-article-footer";
+        aOriginalLink.id    = "readability-article-url";
 
         /* Apply user-selected styling */
         document.body.className = readStyle;
@@ -131,15 +131,16 @@ var readability = {
 
         /* Glue the structure of our document together. */
         aHost.innerHTML = "[<a href=\"" + window.location.href + "\">" + window.location.host + "</a>]";
-        aOriginalLink.innerHTML =  "<a href=\"" + window.location.href + "\">link</a>";
+        aOriginalLink.innerHTML =  "<a href=\"" + window.location.href + "\">" + window.location.href + "</a>";
         
         articleDiv.appendChild( aHeader );
         articleDiv.appendChild( aBody );
         articleDiv.appendChild( aFooter );
         
         aHeader.appendChild( aHost );
-        aHeader.appendChild( aOriginalLink );
         aHeader.appendChild( articleTitle );
+        aHeader.appendChild( aOriginalLink );
+        
         aBody.appendChild( articleContent );
 
         /* Clear the old HTML, insert the new content. */
