@@ -1,0 +1,123 @@
+body {
+    background-color:#F2F2F2; /* #EDEBE8 #F8F8F5 #F4EED9 */
+    /* color: #1D1916 */
+}
+/* background color based on style */
+#readability-article {
+    margin-left:auto;
+    margin-right:auto;
+}
+#readability-article-header {
+    text-align:center;
+    border-bottom:1px solid #666;
+    padding-bottom:1em;
+}
+#readability-article-header h1 {
+    font-size:2em;
+}
+#readability-article-host {
+    font-size:87.5%;
+    color:#666;
+    text-transform:lowercase;
+}
+#readability-article-url {
+    font-size:87.5%;
+    color:#666;
+    font-style:italic;
+    text-align:center;
+    overflow:hidden;
+}
+
+#readability-article-host a, #readability-article-url a {
+    color:#666;
+    text-decoration:none;
+}
+
+/* font-families according to style */
+
+#readability-article.size-x-small {font-size:75%;}
+#readability-article.size-small {font-size:87.5%}
+#readability-article.size-medium {font-size:100%}
+#readability-article.size-large {font-size:112.5%}
+#readability-article.size-x-large {font-size:150%}
+#readability-article.margin-x-narrow {width:30%;}
+#readability-article.margin-narrow {width:45%}
+#readability-article.margin-medium {width:65%}
+#readability-article.margin-wide {width:75%}
+#readability-article.margin-x-wide {width:90%}
+
+#readability-article-body {
+    text-align:justify;
+    line-height:130%;
+}
+
+#readability-article-body h1,
+#readability-article-body h2,
+#readability-article-body h3,
+#readability-article-body h4,
+#readability-article-body h5,
+#readability-article-body h6 {
+    text-align:left;
+}
+
+#readability-article-body a {
+    text-decoration:none;
+    border-bottom:1px dotted #BBB;
+    color:#00005A;
+}
+#readability-article-body a:hover {
+    text-decoration:underline;
+    border-bottom:none;
+}
+
+#readability-article-body pre, #readability-article-body code {
+    overflow-x:scroll;
+    font-size:90%;
+}
+    #readability-article.size-x-small #readability-article-body pre, #readability-article.size-x-small #readability-article-body code {font-size:100%;}
+    #readability-article.size-small #readability-article-body pre, #readability-article.size-small #readability-article-body code {font-size:95%}
+
+#readability-article-footnotes {
+    overflow:hidden;
+    font-size:87.5%;
+}
+    #readability-article.size-x-small #readability-article-footnotes {font-size:100%;}
+    #readability-article.size-small #readability-article-footnotes {font-size:95%}
+
+#readability-article-footnotes hr {
+    border: 0 solid #999999;
+    border-top-width: 1px;
+    margin-left: 0;
+    margin-top: 5em;
+    width: 8em;
+}
+
+#configuration {
+    border-top:1px dotted #666;
+    text-align:center;
+    margin:2em auto 0;
+}
+#configuration div#conftoggle {
+    text-align:center;
+}
+#configuration div#conftoggle a {
+    text-decoration:none;
+    background: url("button_disclose.png") no-repeat scroll left top transparent;
+    display: block;
+    height: 15px;
+    margin: 10px auto 20px;
+    text-indent: -9999px;
+    width: 24px;
+}
+#configuration table {
+    width:50%;
+    margin:auto;
+}
+#configuration th {
+    text-align:left;
+    padding-left:15px;
+}
+#configuration td {
+    text-align:left;vertical-align:top;
+}
+

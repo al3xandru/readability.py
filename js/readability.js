@@ -478,6 +478,7 @@ var readability = {
 
         var articleFootnotes    = document.createElement('ol');
         footnotes.appendChild( articleFootnotes );
+        footnotesWrapper.appendChild( footnotes );
 
         var articleLinks = articleContent.getElementsByTagName('a');
         var linkCount    = articleFootnotes.getElementsByTagName('li').length;
@@ -485,22 +486,20 @@ var readability = {
         {
             var articleLink  = articleLinks[i],
                 footnoteLink = articleLink.cloneNode(true),
-                refLink      = document.createElement('a'),
+                refLink      = document.createElement('small'),
                 footnote     = document.createElement('li'),
                 linkDomain   = footnoteLink.host ? footnoteLink.host : document.location.host,
                 linkText     = readability.getInnerText(articleLink);
             
-            if(articleLink.className && articleLink.className.indexOf('readability-DoNotFootnote') !== -1 || linkText.match(readability.regexps.skipFootnoteLink)) {
+            if(articleLink.className && articleLink.className.indexOf('rdnf') !== -1 || linkText.match(readability.regexps.skipFootnoteLink)) {
                 continue;
             }
             
             linkCount++;
 
             /** Add a superscript reference after the article link */
-            refLink.href      = '#readabilityFootnoteLink-' + linkCount;
-            refLink.innerHTML = '<small><sup>[' + linkCount + ']</sup></small>';
-            refLink.className = 'readability-DoNotFootnote';
-            try { refLink.style.color = 'inherit'; } catch(e) {} /* IE7 doesn't like inherit. */
+            refLink.innerHTML = "<sup>[<a class='dnf' href='#rfl-'" + linkCount + "'>" + linkCount + "</a>]</sup>";
+            // try { refLink.style.color = 'inherit'; } catch(e) {} /* IE7 doesn't like inherit. */
             
             if(articleLink.parentNode.lastChild == articleLink) {
                 articleLink.parentNode.appendChild(refLink);
@@ -508,13 +507,14 @@ var readability = {
                 articleLink.parentNode.insertBefore(refLink, articleLink.nextSibling);
             }
 
-            articleLink.name        = 'readabilityLink-' + linkCount;
+            articleLink.name        = 'rl-' + linkCount;
             try { articleLink.style.color = 'inherit'; } catch(e) {} /* IE7 doesn't like inherit. */
 
-            footnote.innerHTML      = "<small><sup><a href='#readabilityLink-" + linkCount + "' title='Jump to Link in Article'>^</a></sup></small> ";
+            <a href="{{request_handler.path_url}}?u={{ link|urlencode }}">{{ txt|safe }}</a> <a title="Jump back to footnote {{ forloop.counter }} in the text" rev="footnote" href="#rl-{{ forloop.counter }}" class="footnoteBackLink">&#8617;</a>
+            footnote.innerHTML      = "<a href='#readabilityLink-" + linkCount + "' title='Jump to Link in Article'>^</a></sup></small> ";
 
             footnoteLink.innerHTML  = (footnoteLink.title ? footnoteLink.title : linkText);
-            footnoteLink.name       = 'readabilityFootnoteLink-' + linkCount;
+            footnoteLink.name       = 'rfl-' + linkCount;
             
             footnote.appendChild(footnoteLink);
             footnote.innerHTML = footnote.innerHTML + "<small> (" + linkDomain + ")</small>";
