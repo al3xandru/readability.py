@@ -63,6 +63,7 @@ body.style-inspira {
     margin: 2em auto;
     text-align:center;
     text-indent: -9999px;
+    width: 24px;
 }
 
 #readability-article-body {
@@ -133,13 +134,13 @@ body.style-inspira {
 }
 #readability-confs div#conftoggle {
     text-align:center;
+    margin: 10px auto 50px;
 }
 #readability-confs div#conftoggle a {
     text-decoration:none;
     background: url("http://github.com/al3xandru/readability.py/raw/master/css/button_disclose.png") no-repeat scroll left top transparent;
     display: block;
     height: 15px;
-    margin: 10px auto 20px;
     text-indent: -9999px;
     width: 24px;
 }
@@ -147,3 +148,8 @@ body.style-inspira {
     text-align: left; 
     margin: 0 auto;
 }
+
+@media all and (min-device-width:960px) {
+    #readability-confs div#conftoggle {
+        margin-bottom: 30px;
+    }
