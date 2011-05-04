@@ -1592,7 +1592,6 @@ var readability = {
         for (var y=targetList.length-1; y >= 0; y--) {
             /* Allow youtube and vimeo videos through as people usually want to see those. */
             if(isEmbed) {
-                dbg("isEmbed:" + tag);
                 var attributeValues = "";
                 for (var i=0, il=targetList[y].attributes.length; i < il; i++) {
                     attributeValues += targetList[y].attributes[i].value + '|';
@@ -1600,7 +1599,6 @@ var readability = {
                 
                 /* First, check the elements attributes to see if any of them contain youtube or vimeo */
                 if (attributeValues.search(readability.regexps.videos) !== -1) {
-                    dbg("found pattern... do not remove");
                     continue;
                 }
 
