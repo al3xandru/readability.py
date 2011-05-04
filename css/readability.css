@@ -149,6 +149,8 @@ body.style-inspira {
     margin: 0 auto;
 }
 
+.fnlnk sup {font-size:75%}
+
 @media all and (min-device-width:960px) {
     #readability-confs {
         margin: 2em auto 1em;
