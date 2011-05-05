@@ -13,7 +13,7 @@ var dbg = (typeof console !== 'undefined') ? function(s) {
  * Readability is licensed under the Apache License, Version 2.0.
 **/
 var readability = {
-    version:                '1.7.1.1',
+    version:                '1.7.1.2',
     emailSrc:               'http://github.com/al3xandru/readability.py',
     iframeLoads:             0,
     convertLinksToFootnotes: false,
@@ -656,12 +656,36 @@ var readability = {
             var imgCount    = articleParagraphs[i].getElementsByTagName('img').length;
             var embedCount  = articleParagraphs[i].getElementsByTagName('embed').length;
             var objectCount = articleParagraphs[i].getElementsByTagName('object').length;
+            var iframeCount = articleParagraphs[i].getElementsByTagName('iframe').length;
             
-            if(imgCount === 0 && embedCount === 0 && objectCount === 0 && readability.getInnerText(articleParagraphs[i], false) == '') {
+            if(imgCount === 0 && embedCount === 0 && objectCount === 0 && iframeCount === 0 && readability.getInnerText(articleParagraphs[i], false) == '') {
                 articleParagraphs[i].parentNode.removeChild(articleParagraphs[i]);
             }
         }
-
+        var siblingNext = function(elem) {
+            do {
+                elem = elem.nextSibling;
+            } while (elem && elem.nodeType != 1);
+            return elem;                
+        }
+        
+        /* Remove headers with no following paragraphs */
+        for(var hi = 2; hi < 7; hi++) { 
+            var headers = articleContent.getElementsByTagName('h' + hi);
+            for(var i = headers.length - 1; i >= 0; i--) {
+                var siblingNodes = headers[i].parentNode.childNodes;
+                var postSiblingsCount = 0;
+                for(var j = siblingNodes.length - 1; j >= 0 && siblingNodes[j] != headers[i]; j--) {
+                    if(siblingNodes[j].nodeType == 1 && siblingNodes[j].nodeName !== 'BR') {
+                        postSiblingsCount += 1;
+                    }
+                }
+                if(postSiblingsCount == 0) {
+                    dbg("Removing header with no siblings " + headers[i] + " (" + headers[i].className + ":" + headers[i].id + ")");
+                    headers[i].parentNode.removeChild(headers[i]);
+                }
+            }
+        }
         try {
             articleContent.innerHTML = articleContent.innerHTML.replace(/<br[^>]*>\s*<p/gi, '<p');      
         }
