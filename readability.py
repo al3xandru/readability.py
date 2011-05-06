@@ -22,7 +22,7 @@ from string import punctuation
 
 __READABILITY_VERSION__ = '1.7.1'
 __BEAUTIFULSOUP_VERSION = '3.2.0'
-__VERSION__ = '1.7.1.11'
+__VERSION__ = '1.7.1.12'
 __DEBUG__ = False 
 __OUTPUT__ = True
 
@@ -38,7 +38,7 @@ trimRe = re.compile('^\s+|\s+$', re.MULTILINE)
 normalizeRe = re.compile('\s+', re.MULTILINE)
 killBreaksRe = re.compile('(<br\s*/?>(\s|&nbsp;?)*){1,}', re.MULTILINE)
 killMoreBreaksRe = re.compile('<br[^>]*>\s*<p', re.MULTILINE)
-videoRe = re.compile('(youtube|vimeo|blip|slideshare)\.(com|tv|net)', re.IGNORECASE)
+videoRe = re.compile('(youtube|vimeo|blip|slideshare|brightcove)\.(com|tv|net)', re.IGNORECASE)
 unknownRe = re.compile('\.( |$)')
 skipFootnoteLink = re.compile('^\s*(\[?[a-z0-9]{1,2}\]?|^|edit|citation needed)\s*$', re.IGNORECASE)
 nextLinkRe = re.compile('(next|weiter|continue|>([^\|]|$)|»([^\|]|$))', re.IGNORECASE) # Match: next, continue, >, >>, ¬ª but not >|, ¬ª| as those usually mean last.
@@ -237,6 +237,7 @@ class Readability(object):
     if real_body:
       for e in real_body.findAll(attrs={'class': True}):
         cls = e['class']
+        # I can do better here
         if cls.find('readability') == -1:
           dbg("clean_class_attr %s (%s)" % (e.name, e['class']))          
           del e['class']
@@ -788,7 +789,7 @@ class Readability(object):
 
     for paragraph in articleContent.findAll('p'):
       imgCount = len(paragraph.findAll('img'))
-      embedCount = len(paragraph.findAll(['embed', 'object']))
+      embedCount = len(paragraph.findAll(['embed', 'object', 'iframe']))
       if imgCount == 0 and embedCount == 0 and len(self.getInnerText(paragraph)) == 0:
         paragraph.extract()
 
@@ -797,6 +798,25 @@ class Readability(object):
     self._clean_conditionally(articleContent, 'table')
     self._clean_conditionally(articleContent, 'ul')
     self._clean_conditionally(articleContent, 'div')
+
+    self._cleanLeftBehinds(articleContent)
+
+  def _cleanLeftBehinds(self, articleContent):
+    headers = articleContent.findAll(['h2', 'h3', 'h4', 'h5', 'h6'])
+    for h in headers:
+      siblings = h.parent.contents
+      afterHeaderSiblingsCount = 0
+      for j in range(len(siblings) - 1, -1, -1):
+        if isinstance(siblings[j], Tag):
+          if h == siblings[j]:
+            break
+          if siblings[j].name != 'br':
+            afterHeaderSiblingsCount += 1
+      if afterHeaderSiblingsCount == 0:
+        dbg("Removing header with no siblings %s (%s:%s)" % (h.name, h.get('class',''), h.get('id',''))) 
+        h.extract()
+        
+
     
 
   def cleanStyles(self, articleContent):
@@ -807,13 +827,9 @@ class Readability(object):
         self.cleanStyles(c)
     
   def _clean(self, articleContent, tag):
-    is_embed = (tag in ('object', 'embed'))
-#    if is_embed:
-#      dbg('working on embed')
+    is_embed = (tag in ('object', 'embed', 'iframe'))
     for c in articleContent.findAll(tag):
-#      dbg('found: %s' % c)
       if is_embed and videoRe.search(str(c)):
-#        dbg("matched: %s" % c)
         continue
       c.extract()
 
