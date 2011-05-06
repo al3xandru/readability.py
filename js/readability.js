@@ -662,13 +662,18 @@ var readability = {
                 articleParagraphs[i].parentNode.removeChild(articleParagraphs[i]);
             }
         }
-        var siblingNext = function(elem) {
-            do {
-                elem = elem.nextSibling;
-            } while (elem && elem.nodeType != 1);
-            return elem;                
+
+        readability.cleanLeftBehinds(articleContent);
+
+        try {
+            articleContent.innerHTML = articleContent.innerHTML.replace(/<br[^>]*>\s*<p/gi, '<p');      
         }
-        
+        catch (e) {
+            dbg("Cleaning innerHTML of breaks failed. This is an IE strict-block-elements bug. Ignoring.: " + e);
+        }
+    },
+
+    cleanLeftBehinds: function(articleContent) {
         /* Remove headers with no following paragraphs */
         for(var hi = 2; hi < 7; hi++) { 
             var headers = articleContent.getElementsByTagName('h' + hi);
@@ -685,12 +690,6 @@ var readability = {
                     headers[i].parentNode.removeChild(headers[i]);
                 }
             }
-        }
-        try {
-            articleContent.innerHTML = articleContent.innerHTML.replace(/<br[^>]*>\s*<p/gi, '<p');      
-        }
-        catch (e) {
-            dbg("Cleaning innerHTML of breaks failed. This is an IE strict-block-elements bug. Ignoring.: " + e);
         }
     },
     
