@@ -96,6 +96,7 @@ body.style-inspira {
 #readability-article-body h5,
 #readability-article-body h6 {
     text-align:left;
+    line-height:125%;
 }
 
 #readability-article-body a {
