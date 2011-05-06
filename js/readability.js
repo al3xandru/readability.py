@@ -13,7 +13,7 @@ var dbg = (typeof console !== 'undefined') ? function(s) {
  * Readability is licensed under the Apache License, Version 2.0.
 **/
 var readability = {
-    version:                '1.7.1.2',
+    version:                '1.7.1.3',
     emailSrc:               'http://github.com/al3xandru/readability.py',
     iframeLoads:             0,
     convertLinksToFootnotes: false,
@@ -174,6 +174,7 @@ var readability = {
 
         window.scrollTo(0, 0);
 
+        readability.useArvoFont();
         /* If we're using the Typekit library, select the font */
         if (readStyle == "style-athelas" || readStyle == "style-apertura") {
             aBody.className = readStyle + " rdbTypekit";
@@ -378,7 +379,7 @@ var readability = {
             '<td><input type="text" name="readability-size-conf" id="readability-size-conf"><input type="button" value="Set" onclick="readability.updateSize(document.getElementById(\'readability-size-conf\').value);return false"></td>',
             '</tr>',
             '<tr>',
-            '<td><b>Style</b> (Chaparral, Warnock, Myriad, Museo, Inspira):</td>',
+            '<td><b>Style</b> (Chaparral, Warnock, Myriad, Museo, Inspira, Arvo):</td>',
             '<td><input type="text" name="readability-style-conf" id="readability-style-conf"><input type="button" value="Set" onclick="readability.updateStyle(document.getElementById(\'readability-style-conf\').value);return false"></td>',
             '</tr>',
             '</tbody></table>',
@@ -561,7 +562,17 @@ var readability = {
         }
     },
 
-    useRdbTypekit: function () {
+    useArvoFont: function() {
+        var head = document.getElementsByTagName('head')[0],
+            fontLink = document.createElement('link');
+
+        fontLink.setAttribute("rel", "stylesheet");
+        fontLink.setAttribute("type", "text/css");
+        fontLink.setAttribute("href", "http://fonts.googleapis.com/css?family=Arvo:regular,italic,bold,bolditalic");
+        head.appendChild(fontLink);
+    },
+
+    useRdbTypekit: function() {
         var rdbHead      = document.getElementsByTagName('head')[0];
         var rdbTKScript  = document.createElement('script');
         var rdbTKCode    = null;

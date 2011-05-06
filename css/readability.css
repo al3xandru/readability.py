@@ -59,7 +59,7 @@ body.style-inspira {
 
 
 #readability-article-body p.page-separator {
-    background: url("http://github.com/al3xandru/readability.py/raw/master/css/break-bar3.gif") no-repeat scroll center bottom transparent;
+    background: url("http://github.com/al3xandru/readability.py/raw/master/css/break-bar2.gif") no-repeat scroll center bottom transparent;
     margin: 2em auto;
     text-align:center;
     text-indent: -9999px;
@@ -85,6 +85,9 @@ body.style-inspira {
 }
 #readability-article-body.style-inspira {
     font-family: "GE Inspira Pitch", "GE Inspira", Corbel, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#readability-article-body.style-arvo {
+    font-family: Arvo,"Chaparral Pro","chaparral-pro-1","chaparral-pro-2",Cambria,"Hoefler Text",Georgia,"Times New Roman",serif;
 }
 #readability-article-body h1,
 #readability-article-body h2,
