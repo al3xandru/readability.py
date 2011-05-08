@@ -182,13 +182,20 @@ var readability = {
         }
 
         if (nextPageLink) {
+            var nextPage = document.createElement("DIV");
+            nextPage.setAttribute("style", "text-align: center");
+            nextPage.innerHTML = "<p class='page-separator' title='Page "+ readability.curPageNum + "'>&sect;</p>" + 
+                "<p><a href='" + nextPageLink + "' onclick='readability.appendNextPage(this);return false;'>View next page</a></p>";
+            document.getElementById("readability-content").appendChild(nextPage);
             /** 
              * Append any additional pages after a small timeout so that people
              * can start reading without having to wait for this to finish processing.
             **/
+            /*
             window.setTimeout(function() {
                 readability.appendNextPage(nextPageLink);
             }, 500);
+            */
         }
 
         /** Smooth scrolling **/
@@ -1442,21 +1449,24 @@ var readability = {
     curPageNum: 1,
 
     appendNextPage: function (nextPageLink) {
+
         readability.curPageNum++;
 
         var articlePage       = document.createElement("DIV");
         articlePage.id        = 'readability-page-' + readability.curPageNum;
         articlePage.className = 'page';
-        articlePage.innerHTML = '<p class="page-separator" title="Page ' + readability.curPageNum + '">&sect;</p>';
+        //articlePage.innerHTML = '<p class="page-separator" title="Page ' + readability.curPageNum + '">&sect;</p>';
 
         document.getElementById("readability-content").appendChild(articlePage);
 
+        /*
         if(readability.curPageNum > readability.maxPages) {
             var nextPageLink = "<div style='text-align: center'><a href='" + nextPageLink + "'>View Next Page</a></div>";
 
             articlePage.innerHTML = articlePage.innerHTML + nextPageLink;
             return;
         }
+        */
         
         /**
          * Now that we've built the article page DOM element, get the page content
@@ -1548,7 +1558,12 @@ var readability = {
                     );
 
                     if(nextPageLink) {
-                        readability.appendNextPage(nextPageLink);
+                       // readability.appendNextPage(nextPageLink);
+                        var nextPage = document.createElement("DIV");
+                        nextPage.setAttribute("style", "text-align: center");
+                        nextPage.innerHTML = "<p class='page-separator' title='Page "+ readability.curPageNum + "'>&sect;</p>" + 
+                            "<p><a href='" + nextPageLink + "' onclick='readability.appendNextPage(this);return false;'>View next page</a></p>";
+                        document.getElementById('readability-content').appendChild(nextPage);
                     }
                 }
             });
