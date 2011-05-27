@@ -379,15 +379,15 @@ var readability = {
             '<table><tbody>',
             '<tr>',
             '<td><b>Margin</b> (x-narrow, narrow, medium, wide, x-wide):</td>',
-            '<td><input type="text" name="readability-margin-conf" id="readability-margin-conf"><input type="button" value="Set" onclick="readability.updateMargin(document.getElementById(\'readability-margin-conf\').value);return false"></td>',
+            '<td><input type="text" name="readability-margin-conf" id="readability-margin-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-margin-conf-btn")\'><input type="button" value="Set" id="readability-margin-conf-btn" onclick="readability.updateMargin(document.getElementById(\'readability-margin-conf\').value);return false"></td>',
             '</tr>',
             '<tr>',
             '<td><b>Size</b> (x-small, small, medium, large, x-large):</td>',
-            '<td><input type="text" name="readability-size-conf" id="readability-size-conf"><input type="button" value="Set" onclick="readability.updateSize(document.getElementById(\'readability-size-conf\').value);return false"></td>',
+            '<td><input type="text" name="readability-size-conf" id="readability-size-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-size-conf-btn")\'><input type="button" value="Set" id="readability-size-conf-btn" onclick="readability.updateSize(document.getElementById(\'readability-size-conf\').value);return false"></td>',
             '</tr>',
             '<tr>',
-            '<td><b>Style</b> (Chaparral, Warnock, Myriad, Museo, Inspira, Arvo):</td>',
-            '<td><input type="text" name="readability-style-conf" id="readability-style-conf"><input type="button" value="Set" onclick="readability.updateStyle(document.getElementById(\'readability-style-conf\').value);return false"></td>',
+            '<td><b>Style</b> (Chaparral, Warnock, Myriad, Museo, Inspira, Arvo, VeraSans, VeraSerif):</td>',
+            '<td><input type="text" name="readability-style-conf" id="readability-style-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-style-conf-btn")\'><input type="button" value="Set" id="readability-style-conf-btn" onclick="readability.updateStyle(document.getElementById(\'readability-style-conf\').value);return false"></td>',
             '</tr>',
             '</tbody></table>',
             '</div>',
@@ -1919,6 +1919,11 @@ var readability = {
         var display = el.style.display;
         if (display === 'none') {el.style.display = 'block'}
         else {el.style.display = 'none'};
+    },
+    triggerEnterKey: function(evt, targetEl) {
+        if(evt.keyCode === 13) {
+            document.getElementById(targetEl).click();
+        }
     }
 };
 

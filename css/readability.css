@@ -1,11 +1,11 @@
 /* background color based on style */
-body.style-chaparral {
+body.style-chaparral,body.style-verasans {
     background-color:#F2F2F2;
 }
 body.style-warnock {
     background-color:#EDEBE8;
 }
-body.style-myriad {
+body.style-myriad,body.style-veraserif {
     background-color:#F8F8F5;
 }
 body.style-museo {
@@ -88,6 +88,12 @@ body.style-inspira {
 }
 #readability-article-body.style-arvo {
     font-family: Arvo,"Chaparral Pro","chaparral-pro-1","chaparral-pro-2",Cambria,"Hoefler Text",Georgia,"Times New Roman",serif;
+}
+#readability-article-body.style-veraserif {
+    font-family: "Bitstream Vera Serif", Cambria,"Hoefler Text",Georgia, "Times New Roman",serif;
+}
+#readability-article-body.style-verasans {
+    font-family: "Bitstream Vera Sans", Corbel, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #readability-article-body h1,
 #readability-article-body h2,
