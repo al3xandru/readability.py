@@ -386,8 +386,8 @@ var readability = {
             '<td><input type="text" name="readability-size-conf" id="readability-size-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-size-conf-btn")\'><input type="button" value="Set" id="readability-size-conf-btn" onclick="readability.updateSize(document.getElementById(\'readability-size-conf\').value);return false"></td>',
             '</tr>',
             '<tr>',
-            '<td><b>Background</b> (F2F2F2, EDE8E8, F8F8F5, F4EED9):</td>',
-            '<td><input type="text" name="readability-bckgrnd-conf" id="readability-bckgrnd-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-bckgrdn-conf-btn")\'><input type="button" value="Set" id="readability-bckgrnd-conf-btn" onclick="readability.updateBackground(document.getElementById(\'readability-bckgrnd-conf\').value);return false"></td>',
+            '<td><b>Background</b> (a:F2F2F2, b:EDE8E8, c:F8F8F5, d:F4EED9):</td>',
+            '<td><input type="text" name="readability-bckgrnd-conf" id="readability-bckgrnd-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-bckgrdn-conf-btn")\'><input type="button" value="Set" id="readability-bckgrnd-conf-btn" onclick="readability.updateStyle(document.getElementById(\'readability-bckgrnd-conf\').value);return false"></td>',
             '</tr>',
             '<tr>',
             '<td colspan="2"><b>Style</b>: <span style="font-size:0.8em">' + readability.FontKit.display() + '</span></td>',
@@ -1939,7 +1939,6 @@ var readability = {
 
       setFont: function(fname) {
         if(!fname) return;
-        fname = decodeURI(fname);
         var vals = this.defaultKits[fname];
         if(!vals) return;
         var artBody = document.getElementById("readability-article-body");
@@ -2004,5 +2003,5 @@ var readability = {
       }                 
     }
 };
-
 readability.init();
+if(readFont) readability.FontKit.setFont(readFont);
