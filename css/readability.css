@@ -114,7 +114,11 @@ body.style-inspira {
     text-decoration:underline;
     border-bottom:none;
 }
-
+#readability-article-body sup {
+    vertical-align: baseline;
+    position: relative;
+    bottom: 1ex;
+}
 #readability-article-body pre, #readability-article-body code {
     overflow-x:scroll;
     font-size:90%;
