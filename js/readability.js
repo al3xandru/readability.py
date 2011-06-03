@@ -386,8 +386,11 @@ var readability = {
             '<td><input type="text" name="readability-size-conf" id="readability-size-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-size-conf-btn")\'><input type="button" value="Set" id="readability-size-conf-btn" onclick="readability.updateSize(document.getElementById(\'readability-size-conf\').value);return false"></td>',
             '</tr>',
             '<tr>',
-            '<td><b>Style</b> (Chaparral, Warnock, Myriad, Museo, Inspira, Arvo, VeraSans, VeraSerif):</td>',
-            '<td><input type="text" name="readability-style-conf" id="readability-style-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-style-conf-btn")\'><input type="button" value="Set" id="readability-style-conf-btn" onclick="readability.updateStyle(document.getElementById(\'readability-style-conf\').value);return false"></td>',
+            '<td><b>Background</b> (F2F2F2, EDE8E8, F8F8F5, F4EED9):</td>',
+            '<td><input type="text" name="readability-bckgrnd-conf" id="readability-bckgrnd-conf" onkeydown=\'readability.triggerEnterKey(event,"readability-bckgrdn-conf-btn")\'><input type="button" value="Set" id="readability-bckgrnd-conf-btn" onclick="readability.updateBackground(document.getElementById(\'readability-bckgrnd-conf\').value);return false"></td>',
+            '</tr>',
+            '<tr>',
+            '<td colspan="2"><b>Style</b>: <span style="font-size:0.8em">' + readability.FontKit.display() + '</span></td>',
             '</tr>',
             '</tbody></table>',
             '</div>',
@@ -1924,6 +1927,81 @@ var readability = {
         if(evt.keyCode === 13) {
             document.getElementById(targetEl).click();
         }
+    },
+    FontKit: {
+      display: function() {
+        var html = "";
+        for(var k in this.defaultKits) {
+            html += "<a class=\"fontkitopt\" href=\"#\" onclick=\"readability.FontKit.setFont('" + k + "');\">" + k + " (" + this.defaultKits[k][1]  +")</a> | ";
+        }
+        return html;
+      },
+
+      setFont: function(fname) {
+        if(!fname) return;
+        fname = decodeURI(fname);
+        var vals = this.defaultKits[fname];
+        if(!vals) return;
+        var artBody = document.getElementById("readability-article-body");
+        if(artBody) {
+            artBody.style.fontFamily = vals[0];
+            for(var hel=1;hel<7;hel++) {
+                var headers =  artBody.getElementsByTagName("H"+hel);
+                for(var h=0,l=headers.length; h < l; h++) {
+                    headers[h].style.fontFamily = vals[2];
+                }
+            }
+        }
+        if(vals[3]) {
+          var gwfLink = document.createElement("LINK");
+          gwfLink.type = "text/css";
+          gwfLink.rel = "stylesheet"
+          gwfLink.href = "http://fonts.googleapis.com/css?family=" + vals[3];
+          document.head.appendChild(gwfLink);
+        }
+        return false;
+      },
+
+      defaultKits: {
+        "Arimo": ["'arimo-1','arimo-2', 'Arimo'", "sans", "Georgia", "Arimo:regular,italic,bold,bolditalic"],
+        "Bitstream Vera Sans": ["'Bitstream Vera Sans'", "sans", "'Bitstream Vera Serif'", null],
+        "Cabin": ["Cabin", "sans", "Georgia", "Cabin:regular,regularitalic,bold,bolditalic"],
+        "Cousine": ["Cousine", "sans", "Georgia", "Cousine:regular,italic,bold,bolditalic"],
+        "GE Inspira Pitch": ["'GE Inspira Pitch'", "sans", "Georgia", null],
+        "Geeza Pro": ["'Geeza Pro'", "sans", "Georgia", null],
+        "Helvetica Neue": ["'Helvetica Neue'", "sans", "Georgia", null],
+        "Lato": ["Lato", "sans", "Georgia", "Lato:regular,regularitalic,bold,bolditalic"],
+        "Mako": ["Mako", "sans", "Georgia", "Mako"],
+        "Metrophobic": ["Metrophobic", "sans", "Georgia", "Metrophobic"],
+        "Molengo": ["Molengo", "sans", "Georgia", "Molengo"],
+        "Muli": ["Muli", "sans", "Georgia", "Muli:regular,regularitalic"],
+        "Myriad Pro": ["'myriad-pro-1','myriad-pro-2', 'Myriad Pro'", "sans", "Georgia", "vtt1mrl"],
+        "News Cycle": ["'News Cycle'", "sans", "Georgia", "News+Cycle"],
+        "Nobile": ["Nobile", "sans", "Georgia", "Nobile:regular,italic,bold,bolditalic"],
+        "Quattrocento Sans": ["'Quattrocento Sans'", "sans", "Georgia", "Quattrocento+Sans"],
+        "Play": ["Play", "sans", "Georgia", "Play:regular,bold"],
+        "Shanti": ["Shanti", "sans", "Georgia", "Shanti"],
+        "Ubuntu": ["Ubuntu", "sans", "Georgia", "Ubuntu:regular,italic,bold,bolditalic"],
+        "Arvo": ["'arvo-1','arvo-2', Arvo", "serif", "'Helvetica Neue'", "Arvo:regular,italic,bold,bolditalic"],
+        "Bitstream Vera Serif": ["'Bitstream Vera Serif'", "serif", "'Bitstream Vera Sans'", null],
+        "Brawler": ["Brawler", "serif", "'Helvetica Neue'", "Brawler"],
+        "Caudex": ["Caudex", "serif", "'Helvetica Neue'", "Caudex:regular,italic,bold,bolditalic"],
+        "EB Garamond": ["'EB Garamond'", "serif", "'Helvetica Neue'", "EB+Garamond"],
+        "Georgia": ["Georgia", "serif", "'Helvetica Neue'", null],
+        "Judson": ["Judson", "serif", "'Helvetica Neue'", "Judson:regular,regularitalic,bold"],
+        "Lora": ["Lora", "serif", "'Helvetica Neue'", "Lora"],
+        "Quattrocento": ["Quattrocento", "serif", "'Helvetica Neue'", "Quattrocento"],
+        "Radley": ["Radley", "serif", "'Helvetica Neue'", "Radley"],
+        "Rokkitt": ["Rokkitt", "serif", "'Helvetica Neue'", "Rokkitt"],
+        "Tinos": ["Tinos", "serif", "'Helvetica Neue'", "Tinos:regular,italic,bold,bolditalic"],
+        "Vollkorn": ["Vollkorn", "serif", "'Helvetica Neue'", "Vollkorn:regular,italic,bold,bolditalic"]
+        /*"Cantarell": ["Cantarell", "sans", "Georgia", "Cantarell:regular,italic,bold,bolditalic"],*/
+        /*"Didact Gothic": ["'Didact Gothic'", "sans", "Georgia", "Didact+Gothic"],*/
+        /*"Nunito": ["Nunito", "sans", "Georgia", "Nunito:regular,bold"],*/
+        /*"Puritan": ["Puritan", "sans", "Georgia", "Puritan:regular,italic,bold,bolditalic"],*/
+        /*"Crimson Text": ["'Crimson Text'", "serif", "'Helvetica Neue'", "Crimson+Text:regular,regularitalic,bold,bolditalic"],*/
+        /*"Playfair Display": ["'Playfair Display'", "serif", "'Helvetica Neue'", "Playfair+Display"],*/
+      }                 
     }
 };
 
