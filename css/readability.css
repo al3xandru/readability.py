@@ -1,16 +1,9 @@
 /* background color based on style */
-body.style-a {
-    background-color:#F2F2F2;
-}
-body.style-b {
-    background-color:#EDEBE8;
-}
-body.style-c {
-    background-color:#F8F8F5;
-}
-body.style-d {
-    background-color:#F4EED9;
-}
+body.style-a { background-color:#F2F2F2; }
+body.style-b { background-color:#EDEBE8; }
+body.style-c { background-color:#F8F8F5; }
+body.style-d { background-color:#F4EED9; }
+
 #readability-article {
     margin-left:auto;
     margin-right:auto;
@@ -42,18 +35,17 @@ body.style-d {
 }
 
 /* font-families according to style */
-
 #readability-article.size-x-small {font-size:75%;}
 #readability-article.size-small {font-size:87.5%}
 #readability-article.size-medium {font-size:100%}
 #readability-article.size-large {font-size:112.5%}
 #readability-article.size-x-large {font-size:150%}
+
 #readability-article.margin-x-narrow {width:90%;}
 #readability-article.margin-narrow {width:75%}
 #readability-article.margin-medium {width:65%}
 #readability-article.margin-wide {width:45%}
 #readability-article.margin-x-wide {width:30%}
-
 
 #readability-article-body p.page-separator {
     background: url("http://github.com/al3xandru/readability.py/raw/master/css/break-bar2.gif") no-repeat scroll center bottom transparent;
@@ -137,10 +129,9 @@ body.style-d {
 }
 
 @media all and (min-device-width:960px) {
-    #readability-confs {
-        margin: 2em auto 1em;
-    }
+    #readability-confs { margin: 2em auto 1em; }
 }
+
 /*
 #readability-article-body.style-chaparral {
     font-family: "Chaparral Pro", "chaparral-pro-1","chaparral-pro-2", Cambria,"Hoefler Text",Georgia, "Times New Roman",serif;
