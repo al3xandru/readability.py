@@ -1934,6 +1934,7 @@ var readability = {
         for(var k in this.defaultKits) {
             html += "<a class=\"fontkitopt\" href=\"#\" onclick=\"readability.FontKit.setFont('" + k + "');\">" + k + " (" + this.defaultKits[k][1]  +")</a> | ";
         }
+        alert("FontKit.display:"+html);
         return html;
       },
 
@@ -2003,5 +2004,8 @@ var readability = {
       }                 
     }
 };
+alert("readability.<preinit>");
 readability.init();
+alert("readability.init");
 try{if(readFont) readability.FontKit.setFont(readFont);}catch(ex){};
+alert("readability.setFont");
