@@ -174,12 +174,14 @@ var readability = {
 
         window.scrollTo(0, 0);
 
-        readability.useArvoFont();
+        /* readability.useArvoFont(); */
         /* If we're using the Typekit library, select the font */
+        /*
         if (readStyle == "style-athelas" || readStyle == "style-apertura") {
             aBody.className = readStyle + " rdbTypekit";
             //readability.useRdbTypekit();
         }
+        */
 
         if (nextPageLink) {
             var nextPage = document.createElement("DIV");
@@ -190,12 +192,8 @@ var readability = {
             /** 
              * Append any additional pages after a small timeout so that people
              * can start reading without having to wait for this to finish processing.
-            **/
-            /*
-            window.setTimeout(function() {
-                readability.appendNextPage(nextPageLink);
-            }, 500);
-            */
+             * window.setTimeout(function() { readability.appendNextPage(nextPageLink); }, 500);
+             **/
         }
 
         /** Smooth scrolling **/
@@ -228,6 +226,8 @@ var readability = {
                 return;
             }
         }
+
+        alert("readability.init done");
     },
 
     /**
@@ -396,6 +396,7 @@ var readability = {
             '</div>',
             '</div>'            
         ].join('');
+        alert("return getConfigurationFooter");
 
         return confFooter;
     },
