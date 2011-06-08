@@ -2004,4 +2004,4 @@ var readability = {
     }
 };
 readability.init();
-if(readFont) readability.FontKit.setFont(readFont);
+try{if(readFont) readability.FontKit.setFont(readFont);}catch(ex){};
